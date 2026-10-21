@@ -1,0 +1,1354 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0E0F11">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Ekonomie</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0E0F11; --panel:#15171A; --panel2:#1A1D21; --line:#23262B; --line2:#2E3238;
+  --text:#E8E9EC; --text2:#C9CCD2; --muted:#8A8F98; --dim:#4A4F57;
+  --acc:#C6F432; --acc-bg:#1F2A0A; --acc2:#7AA2FF; --acc2-bg:#121C33;
+  --bad:#FF7A6B; --bad-bg:#2A1412; --warn:#FFC857;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,monospace; --sans:Inter,system-ui,sans-serif;
+  --r:14px; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+body{min-height:100vh}
+a{color:var(--acc)}
+button{font:inherit;color:inherit;cursor:pointer}
+input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.mono{font-family:var(--mono)}
+.muted{color:var(--muted)}
+
+/* layout */
+.app{display:flex;min-height:100vh}
+.side{width:260px;flex:none;border-right:1px solid var(--line);padding:28px 18px;display:flex;flex-direction:column;gap:26px;position:sticky;top:0;height:100vh;overflow-y:auto}
+.brand{font-family:var(--mono);font-weight:600;font-size:15px;color:var(--acc);text-decoration:none;padding:0 12px}
+.navgrp{display:flex;flex-direction:column;gap:2px}
+.navlbl{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;color:var(--muted);padding:0 12px 8px}
+.navlink{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 12px;border-radius:8px;color:var(--text2);text-decoration:none;font-size:14px;border-left:2px solid transparent}
+.navlink:hover{background:var(--panel2);color:var(--text)}
+.navlink.on{background:var(--panel2);color:var(--text);border-left-color:var(--acc)}
+.navlink .pct{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.navlink.on .pct{color:var(--acc)}
+.sidefoot{margin-top:auto;font-family:var(--mono);font-size:12px;color:var(--muted);padding:0 12px;line-height:1.7}
+.sidefoot b{color:var(--acc);font-weight:600}
+main{flex:1;min-width:0;padding:40px 48px 80px;max-width:1180px}
+.bottomnav{display:none}
+
+@media (max-width:860px){
+  .side{display:none}
+  main{padding-block:22px 100px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+  .bottomnav{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;background:rgba(14,15,17,.96);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom, 0px);padding-left:env(safe-area-inset-left, 0px);padding-right:env(safe-area-inset-right, 0px);z-index:20}
+  .bottomnav a{text-decoration:none;color:var(--muted);font-family:var(--mono);font-size:10.5px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 0 12px}
+  .bottomnav a.on{color:var(--acc)}
+  .bottomnav svg{width:20px;height:20px}
+}
+
+/* type */
+.crumb{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:6px}
+.crumb a{color:var(--muted);text-decoration:none}.crumb a:hover{color:var(--text)}
+h1{margin:0 0 6px;font-size:34px;font-weight:700;letter-spacing:-.5px;line-height:1.15}
+h2{margin:0 0 14px;font-size:21px;font-weight:600;letter-spacing:-.2px}
+h3{margin:0 0 8px;font-size:16px;font-weight:600}
+p{line-height:1.65;color:var(--text2);margin:0 0 12px}
+.lead{font-size:16px;color:var(--text2);margin-bottom:26px}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:26px}
+@media (max-width:860px){h1{font-size:27px}}
+
+/* components */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:24px}
+.card+.card{margin-top:18px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:1000px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.g2,.g3{grid-template-columns:1fr}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--mono);font-size:13px;background:var(--panel2);color:var(--text);border:1px solid var(--line2);border-radius:9px;padding:11px 16px;text-decoration:none;min-height:44px;transition:border-color .15s,background .15s}
+.btn:hover{border-color:var(--muted)}
+.btn.pri{background:var(--acc);color:#0E0F11;border-color:var(--acc);font-weight:600}
+.btn.pri:hover{background:#d6ff55}
+.btn.ghost{background:transparent}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.tag{display:inline-block;font-family:var(--mono);font-size:11px;padding:4px 8px;border-radius:6px;background:var(--panel2);color:var(--muted);border:1px solid var(--line)}
+.tag.acc{color:var(--acc);border-color:#3b4a14;background:var(--acc-bg)}
+.tag.bad{color:var(--bad);border-color:#4a2420;background:var(--bad-bg)}
+.bar{height:6px;background:var(--panel2);border-radius:99px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--acc);border-radius:99px;transition:width .5s}
+
+/* topic tiles */
+.tile{display:flex;flex-direction:column;gap:12px;text-decoration:none;color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px;transition:border-color .15s,transform .15s}
+.tile:hover{border-color:var(--dim);transform:translateY(-2px)}
+.tile .num{font-family:var(--mono);font-size:12px;color:var(--acc)}
+.tile .t{font-size:18px;font-weight:600;line-height:1.25}
+.tile .d{font-size:13px;color:var(--muted);line-height:1.5}
+.stat{display:flex;flex-direction:column;gap:4px}
+.stat .v{font-family:var(--mono);font-size:28px;font-weight:600;color:var(--text)}
+.stat .v.acc{color:var(--acc)}
+.stat .l{font-size:12px;color:var(--muted)}
+
+/* tabs */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:26px;overflow-x:auto}
+.tabs a{font-family:var(--mono);font-size:13px;color:var(--muted);text-decoration:none;padding:12px 14px;border-bottom:2px solid transparent;white-space:nowrap}
+.tabs a.on{color:var(--text);border-bottom-color:var(--acc)}
+
+/* lesson */
+.lesson{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:24px;align-items:start;margin-bottom:22px}
+@media (max-width:1000px){.lesson{grid-template-columns:1fr}}
+.lesson .txt h2{font-size:20px}
+.lesson .txt ul{margin:0 0 12px;padding-left:18px;color:var(--text2);line-height:1.7}
+.lesson .txt b{color:var(--text)}
+.key{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-family:var(--mono);font-size:13.5px;line-height:1.8;color:var(--text);margin:12px 0}
+.key .k{color:var(--acc)}
+.viz{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px;position:sticky;top:20px}
+.viz svg{width:100%;height:auto;display:block;overflow:visible}
+.viz .ctrls{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.viz .ctrls .btn{font-size:12px;padding:8px 11px;min-height:38px}
+.viz .ctrls .btn.on{border-color:var(--acc);color:var(--acc);background:var(--acc-bg)}
+.viz .explain{margin-top:12px;font-size:14px;line-height:1.55;color:var(--text2);min-height:44px;background:var(--bg);border-radius:10px;padding:12px 14px;border:1px solid var(--line)}
+.viz .explain b{color:var(--acc)}
+.sl{display:grid;grid-template-columns:90px 1fr 60px;align-items:center;gap:10px;margin-top:10px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.sl output{color:var(--text);text-align:right}
+input[type=range]{width:100%;accent-color:var(--acc);height:28px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle}
+svg text{font-family:var(--mono)}
+
+/* practice */
+.cats{display:flex;flex-direction:column;gap:10px}
+.cat{display:flex;justify-content:space-between;align-items:center;gap:16px;text-decoration:none;color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;min-height:60px}
+.cat:hover{border-color:var(--dim)}
+.cat .n{font-weight:600;font-size:15px}
+.cat .s{font-size:12.5px;color:var(--muted);margin-top:3px}
+.cat .r{display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.cat .bar{width:90px}
+.dots{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 22px}
+.dots a{width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;border-radius:8px;background:var(--panel2);border:1px solid var(--line);color:var(--muted);text-decoration:none}
+.dots a.ok{background:var(--acc-bg);border-color:#3b4a14;color:var(--acc)}
+.dots a.ko{background:var(--bad-bg);border-color:#4a2420;color:var(--bad)}
+.dots a.cur{border-color:var(--text);color:var(--text)}
+
+.q{font-size:17px;line-height:1.6;color:var(--text);margin:0 0 18px}
+.q b{color:var(--acc);font-weight:600}
+.qsrc{font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:10px}
+table.t{border-collapse:collapse;font-family:var(--mono);font-size:13.5px;margin:4px 0 18px;min-width:100%}
+table.t td,table.t th{padding:8px 10px;border-bottom:1px solid var(--line);text-align:center}
+table.t th{color:var(--muted);font-weight:400}
+table.t td:first-child,table.t th:first-child{text-align:left;color:var(--muted)}
+.tw{overflow-x:auto}
+.opts{display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:640px){.opts{grid-template-columns:1fr}}
+.opt{text-align:left;font-size:15px;line-height:1.45;background:var(--panel2);border:1px solid var(--line2);border-radius:10px;padding:14px 16px;min-height:52px;display:flex;gap:12px;align-items:flex-start}
+.opt .l{font-family:var(--mono);color:var(--muted);flex:none}
+.opt:hover:not(:disabled){border-color:var(--muted)}
+.opt.ok{background:var(--acc-bg);border-color:var(--acc);color:var(--acc)}
+.opt.ko{background:var(--bad-bg);border-color:var(--bad);color:var(--bad)}
+.opt:disabled{cursor:default}
+.numin{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap}
+.numin label{display:flex;flex-direction:column;gap:6px;font-family:var(--mono);font-size:12px;color:var(--muted);flex:1;min-width:140px}
+.numin input{background:var(--bg);border:1px solid var(--line2);border-radius:10px;padding:13px 14px;font-family:var(--mono);font-size:17px;min-height:50px}
+.numin input:focus{border-color:var(--acc);outline:none}
+.numin input.ok{border-color:var(--acc);color:var(--acc)}
+.numin input.ko{border-color:var(--bad);color:var(--bad)}
+.unit{font-family:var(--mono);color:var(--muted)}
+.fb{margin-top:18px;border-radius:12px;padding:16px 18px;border:1px solid var(--line);background:var(--bg)}
+.fb .h{font-family:var(--mono);font-size:13px;margin-bottom:10px}
+.fb .h.ok{color:var(--acc)}.fb .h.ko{color:var(--bad)}
+.sol{font-family:var(--mono);font-size:14px;line-height:1.9;color:var(--text2);white-space:pre-wrap;overflow-x:auto}
+.sol .k{color:var(--acc)}
+.solviz{margin-top:14px;max-width:420px}
+.navq{display:flex;justify-content:space-between;gap:10px;margin-top:22px;flex-wrap:wrap}
+@media (max-width:640px){.navq{display:grid;grid-template-columns:1fr 1fr}.navq .ghost{grid-column:1/-1;order:3}}
+
+/* fraction */
+.fr{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 3px;line-height:1.25}
+.fr>span:first-child{border-bottom:1px solid currentColor;padding:0 3px}
+.fr>span:last-child{padding:0 3px}
+
+/* test */
+.check{display:flex;align-items:center;gap:12px;background:var(--panel2);border:1px solid var(--line2);border-radius:10px;padding:14px 16px;cursor:pointer;min-height:52px}
+.check input{width:20px;height:20px;accent-color:var(--acc)}
+.check.on{border-color:var(--acc)}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{font-family:var(--mono);font-size:13px;background:var(--panel2);border:1px solid var(--line2);border-radius:9px;padding:10px 16px;min-height:44px}
+.seg button.on{border-color:var(--acc);color:var(--acc);background:var(--acc-bg)}
+.score{font-family:var(--mono);font-size:64px;font-weight:600;color:var(--acc);line-height:1}
+
+/* search */
+.search{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line2);border-radius:12px;padding:0 16px;margin-bottom:22px}
+.search input{flex:1;background:transparent;border:none;padding:16px 0;font-size:17px;outline:none}
+.search:focus-within{border-color:var(--acc)}
+.res{display:block;text-decoration:none;color:var(--text);padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--panel);margin-bottom:8px}
+.res:hover{border-color:var(--dim)}
+.res .k{font-family:var(--mono);font-size:11px;color:var(--acc);margin-bottom:4px}
+.res .x{font-size:14px;color:var(--text2);line-height:1.5}
+mark{background:var(--acc-bg);color:var(--acc);border-radius:3px;padding:0 2px}
+
+/* progress chart */
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;align-items:end;height:160px;margin-top:10px}
+.week .c{display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.week .b{width:100%;max-width:40px;background:var(--acc);border-radius:6px 6px 2px 2px;min-height:2px;transition:height .6s}
+.week .b.z{background:var(--line2)}
+.week .d{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.week .m{font-family:var(--mono);font-size:10.5px;color:var(--text2)}
+.rowp{display:grid;grid-template-columns:minmax(0,1fr) 120px 70px;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);font-size:14px}
+.rowp:last-child{border-bottom:none}
+.rowp .mono{font-size:12px;color:var(--muted);text-align:right}
+
+/* formulas */
+.fx{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:10px 18px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.fx:last-child{border-bottom:none}
+.fx .f{font-family:var(--mono);font-size:15px;color:var(--acc)}
+.fx .n{font-size:14px;color:var(--text2)}
+@media (max-width:640px){.fx{grid-template-columns:1fr;gap:4px}}
+
+.fade{animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--panel2);border:1px solid var(--acc);color:var(--acc);font-family:var(--mono);font-size:13px;padding:10px 16px;border-radius:10px;z-index:50}
+
+</style>
+</head>
+<body>
+<script>
+/* ===== Animované grafy ===== */
+const C = { D:'#E8E9EC', S:'#C6F432', B:'#7AA2FF', R:'#FF7A6B', W:'#FFC857', dim:'#4A4F57', mut:'#8A8F98', ax:'#5A5F67' };
+
+function frame(o){
+  o = Object.assign({w:440,h:300,l:44,r:18,t:16,b:34,xmin:0,ymin:0},o);
+  const X = x => o.l + (x-o.xmin)/(o.xmax-o.xmin)*(o.w-o.l-o.r);
+  const Y = y => o.h-o.b - (y-o.ymin)/(o.ymax-o.ymin)*(o.h-o.t-o.b);
+  const axes = (xl,yl) => `
+    <line x1="${o.l}" y1="${o.t-8}" x2="${o.l}" y2="${o.h-o.b}" stroke="${C.ax}" stroke-width="1.5"/>
+    <line x1="${o.l}" y1="${Y(Math.max(o.ymin,0))}" x2="${o.w-o.r+6}" y2="${Y(Math.max(o.ymin,0))}" stroke="${C.ax}" stroke-width="1.5"/>
+    <path d="M${o.l-4} ${o.t-2} L${o.l} ${o.t-10} L${o.l+4} ${o.t-2}" fill="none" stroke="${C.ax}" stroke-width="1.5"/>
+    <path d="M${o.w-o.r} ${Y(Math.max(o.ymin,0))-4} L${o.w-o.r+8} ${Y(Math.max(o.ymin,0))} L${o.w-o.r} ${Y(Math.max(o.ymin,0))+4}" fill="none" stroke="${C.ax}" stroke-width="1.5"/>
+    <text x="${o.l+8}" y="${o.t-2}" fill="${C.mut}" font-size="11">${yl}</text>
+    <text x="${o.w-o.r}" y="${Y(Math.max(o.ymin,0))+20}" fill="${C.mut}" font-size="11" text-anchor="end">${xl}</text>`;
+  const fn = (f, x0, x1, n=80) => {
+    let d='', pen=false;
+    for(let i=0;i<=n;i++){
+      const x = x0+(x1-x0)*i/n, y=f(x);
+      if(!isFinite(y) || y>o.ymax*1.02 || y<o.ymin-(o.ymax-o.ymin)*0.02){pen=false;continue;}
+      d += (pen?'L':'M')+X(x).toFixed(1)+' '+Y(y).toFixed(1)+' '; pen=true;
+    }
+    return d;
+  };
+  const line = (x1,y1,x2,y2,c,wd=2.5,dash='') => `<line x1="${X(x1)}" y1="${Y(y1)}" x2="${X(x2)}" y2="${Y(y2)}" stroke="${c}" stroke-width="${wd}" ${dash?`stroke-dasharray="${dash}"`:''} stroke-linecap="round"/>`;
+  const guide = (x,y,c=C.dim) => `<path d="M${o.l} ${Y(y)} L${X(x)} ${Y(y)} L${X(x)} ${Y(Math.max(o.ymin,0))}" fill="none" stroke="${c}" stroke-width="1.2" stroke-dasharray="4 4"/>`;
+  const dot = (x,y,c,r=6) => `<circle cx="${X(x)}" cy="${Y(y)}" r="${r}" fill="${c}"/>`;
+  const txt = (x,y,s,c=C.mut,size=12,anchor='start',dx=0,dy=0) => `<text x="${X(x)+dx}" y="${Y(y)+dy}" fill="${c}" font-size="${size}" text-anchor="${anchor}">${s}</text>`;
+  const xt = (x,s) => `<text x="${X(x)}" y="${Y(Math.max(o.ymin,0))+16}" fill="${C.mut}" font-size="10.5" text-anchor="middle">${s}</text>`;
+  const yt = (y,s) => `<text x="${o.l-6}" y="${Y(y)+4}" fill="${C.mut}" font-size="10.5" text-anchor="end">${s}</text>`;
+  return {o,X,Y,axes,fn,line,guide,dot,txt,xt,yt};
+}
+
+const ease = t => t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
+function tweener(state, render){
+  let raf=null;
+  return function to(target, dur=700){
+    cancelAnimationFrame(raf);
+    const from = Object.assign({}, state), t0 = performance.now();
+    const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(reduce) dur = 1;
+    const step = now => {
+      const k = Math.min(1,(now-t0)/dur), e = ease(k);
+      for(const key in target) state[key] = from[key] + (target[key]-from[key])*e;
+      render();
+      if(k<1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+  };
+}
+const fmt = (v,d=0) => (Math.round(v*Math.pow(10,d))/Math.pow(10,d)).toLocaleString('cs-CZ');
+
+function vizShell(root, {legend='', ctrls='', sliders='', explain=''}){
+  root.innerHTML = `<div class="viz"><svg viewBox="0 0 440 300" role="img" aria-label="Interaktivní graf"></svg>
+    ${legend?`<div class="legend">${legend}</div>`:''}
+    ${sliders}
+    ${ctrls?`<div class="ctrls">${ctrls}</div>`:''}
+    <div class="explain" aria-live="polite">${explain}</div></div>`;
+  return { svg: root.querySelector('svg'), ex: root.querySelector('.explain') };
+}
+const lg = (c,t,dash) => `<span><i style="background:${dash?'transparent;border-top:2px dashed '+c:c}"></i>${t}</span>`;
+
+/* ---------- 1a: posuny nabídky a poptávky ---------- */
+const TRH_SC = [
+  {k:'Příjmy ↑', ds:22, ss:0, t:'Lidi mají víc peněz → u normálního statku chtějí koupit víc při každé ceně. <b>Poptávka se posune doprava</b>, cena i množství rostou.'},
+  {k:'Příjmy ↓', ds:-22, ss:0, t:'Méně peněz → menší poptávka. <b>D doleva</b>: cena i množství klesají.'},
+  {k:'Substitut zdražil', ds:22, ss:0, t:'Náhrada (např. čaj místo kávy) zdražila → lidi přejdou k našemu statku. <b>D doprava</b>.'},
+  {k:'Substitut zlevnil', ds:-22, ss:0, t:'Levnější náhrada přetáhne zákazníky. <b>D doleva</b> – jako levný čaj u trhu kávy.'},
+  {k:'Komplement zdražil', ds:-22, ss:0, t:'Doplněk (benzín k autům) zdražil → statek chce méně lidí. <b>D doleva</b>.'},
+  {k:'Náklady ↑', ds:0, ss:-22, t:'Dražší vstupy (mzdy, suroviny, energie) → firmy nabízí méně. <b>S doleva</b>: cena roste, množství klesá.'},
+  {k:'Technologie', ds:0, ss:22, t:'Levnější výroba → firmy nabídnou víc. <b>S doprava</b>: cena klesá, množství roste.'},
+  {k:'Dotace firmám', ds:0, ss:22, t:'Dotace snižuje náklady výrobců. <b>S doprava</b>.'},
+  {k:'Daň ↑ (DPH)', ds:0, ss:-22, t:'Daň zvyšuje náklady prodeje. <b>S doleva</b>: vyšší cena, nižší množství.'},
+  {k:'D i S doprava', ds:22, ss:22, t:'Obě křivky doprava → <b>množství jistě roste</b>, cena se nemusí změnit (záleží, která se posune víc).'}
+];
+function vizTrh(root){
+  const ctrls = TRH_SC.map((s,i)=>`<button class="btn" data-i="${i}">${s.k}</button>`).join('') + `<button class="btn ghost" data-r>↺ zpět</button>`;
+  const {svg,ex} = vizShell(root,{ctrls, legend: lg(C.D,'D – poptávka')+lg(C.S,'S – nabídka')+lg(C.dim,'původní stav',1),
+    explain:'Klikni na změnu a sleduj, která křivka se pohne a co to udělá s rovnováhou <b>E</b>.'});
+  const st = {ds:0, ss:0};
+  const F = frame({xmax:100, ymax:10});
+  const D = (q,ds) => 9 - 0.08*(q-ds), S = (q,ss) => 1 + 0.08*(q-ss);
+  const eq = (ds,ss) => { const q = 50+(ds+ss)/2; return [q, D(q,ds)]; };
+  const render = () => {
+    const [q0,p0] = eq(0,0), [q1,p1] = eq(st.ds, st.ss);
+    const moved = Math.abs(st.ds)>.5 || Math.abs(st.ss)>.5;
+    let s = F.axes('Q','P');
+    if(moved){
+      s += `<path d="${F.fn(q=>D(q,0),0,100)}" stroke="${C.dim}" stroke-width="2" fill="none" stroke-dasharray="6 5"/>`;
+      s += `<path d="${F.fn(q=>S(q,0),0,100)}" stroke="${C.dim}" stroke-width="2" fill="none" stroke-dasharray="6 5"/>`;
+      s += F.guide(q0,p0) + F.dot(q0,p0,C.dim,5) + F.txt(q0,p0,'E',C.mut,12,'start',8,-8);
+    }
+    s += `<path d="${F.fn(q=>D(q,st.ds),0,100)}" stroke="${C.D}" stroke-width="2.8" fill="none"/>`;
+    s += `<path d="${F.fn(q=>S(q,st.ss),0,100)}" stroke="${C.S}" stroke-width="2.8" fill="none"/>`;
+    const qd = Math.min(97, st.ds + 8.4/0.08), qs = Math.min(97, st.ss + 8.6/0.08);
+    s += F.txt(qd, D(qd,st.ds), Math.abs(st.ds)>.5?"D'":'D', C.D, 13, 'end', 0, -10);
+    s += F.txt(qs, S(qs,st.ss), Math.abs(st.ss)>.5?"S'":'S', C.S, 13, 'start', 6, 14);
+    s += F.guide(q1,p1,'#6b7178') + F.dot(q1,p1,C.S) + F.txt(q1,p1,moved?"E'":'E',C.S,13,'start',10,-10);
+    s += F.yt(p1,'P'+(moved?'₁':'*')) + F.xt(q1,'Q'+(moved?'₁':'*'));
+    if(moved){
+      const dp = p1-p0, dq = q1-q0;
+      s += `<text x="${F.X(50)}" y="18" fill="#E8E9EC" font-size="12" text-anchor="middle">P ${Math.abs(dp)<.05?'beze změny':dp>0?'↑':'↓'}   Q ${Math.abs(dq)<.3?'beze změny':dq>0?'↑':'↓'}</text>`;
+    }
+    svg.innerHTML = s;
+  };
+  const to = tweener(st, render);
+  root.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{
+    const sc = TRH_SC[+b.dataset.i];
+    root.querySelectorAll('[data-i]').forEach(x=>x.classList.toggle('on',x===b));
+    ex.innerHTML = sc.t; to({ds:sc.ds, ss:sc.ss});
+  });
+  root.querySelector('[data-r]').onclick=()=>{root.querySelectorAll('[data-i]').forEach(x=>x.classList.remove('on')); ex.innerHTML='Výchozí stav – rovnováha <b>E</b>, kde se protíná D a S.'; to({ds:0,ss:0});};
+  render();
+}
+
+/* ---------- 1b: cena mimo rovnováhu (trdelníky) ---------- */
+function vizTrhCena(root){
+  const sliders = `<div class="sl"><span>cena P</span><input type="range" min="45" max="70" step="1" value="66" aria-label="Cena"><output>66 Kč</output></div>`;
+  const {svg,ex} = vizShell(root,{sliders, legend: lg(C.D,'Qd = 430 − 4P')+lg(C.S,'Qs = 10P − 410')});
+  const st = {p:66};
+  const F = frame({xmax:320, ymax:75, ymin:40, l:44});
+  const Qd = p => 430-4*p, Qs = p => 10*p-410;
+  const render = () => {
+    const p = st.p, qd=Qd(p), qs=Qs(p);
+    let s = F.axes('Q (ks)','P (Kč)');
+    [45,50,55,60,65,70].forEach(v=> s += F.yt(v,v));
+    [100,200,300].forEach(v=> s += F.xt(v,v));
+    s += `<path d="${F.fn(q=>(430-q)/4,0,320)}" stroke="${C.D}" stroke-width="2.6" fill="none"/>`;
+    s += `<path d="${F.fn(q=>(q+410)/10,0,320)}" stroke="${C.S}" stroke-width="2.6" fill="none"/>`;
+    s += F.txt(130,75,'D',C.D,13,'start',0,14) + F.txt(300,71,'S',C.S,13,'start',6,4);
+    s += F.dot(190,60,'#6b7178',4) + F.txt(190,60,'E',C.mut,11,'start',6,14);
+    s += F.line(0,p,320,p,C.W,1.5,'5 4');
+    const lo=Math.min(qd,qs), hi=Math.max(qd,qs);
+    if(hi-lo>1){
+      const c = qs>qd? C.R : C.B;
+      s += `<line x1="${F.X(Math.max(lo,0))}" y1="${F.Y(p)}" x2="${F.X(hi)}" y2="${F.Y(p)}" stroke="${c}" stroke-width="6" stroke-linecap="round" opacity=".85"/>`;
+      s += F.txt((lo+hi)/2,p,(qs>qd?'přebytek ':'nedostatek ')+Math.round(hi-lo)+' ks',c,12,'middle',0,-12);
+      const ay = qs>qd ? -1 : 1;
+      s += `<path d="M${F.X(16)} ${F.Y(p)+ay*-6} l0 ${ay*22} m-5 ${-ay*8} l5 ${ay*8} l5 ${-ay*8}" stroke="${C.W}" stroke-width="2" fill="none"/>`;
+    }
+    s += F.dot(Math.max(qd,0),p,C.D,5) + F.dot(Math.max(qs,0),p,C.S,5);
+    svg.innerHTML = s;
+    const pr = Math.round(p);
+    root.querySelector('output').textContent = pr+' Kč';
+    ex.innerHTML = pr>60 ? `Při <b>${pr} Kč</b> chtějí firmy prodat ${Qs(pr)} ks, ale lidi koupí jen ${Qd(pr)} ks → <b>přebytek ${Qs(pr)-Qd(pr)} ks</b>. Prodejci zlevňují, cena klesá k 60 Kč.`
+      : pr<60 ? `Při <b>${pr} Kč</b> chtějí lidi ${Qd(pr)} ks, ale nabízí se jen ${Math.max(Qs(pr),0)} ks → <b>nedostatek ${Qd(pr)-Math.max(Qs(pr),0)} ks</b>. Kupující přeplácí, cena roste k 60 Kč.`
+      : `<b>Rovnováha!</b> Při 60 Kč je Qd = Qs = 190 ks. Trh je vyčištěný, nikdo nemá důvod cenu měnit.`;
+  };
+  const inp = root.querySelector('input'), to = tweener(st, render);
+  inp.oninput = () => to({p:+inp.value}, 250);
+  render();
+}
+
+/* ---------- 2a: TU a MU (kardinalisté) ---------- */
+function vizTU(root){
+  const TU = [0,155,244,324,366,390,400,396];
+  const sliders = `<div class="sl"><span>množství Q</span><input type="range" min="1" max="7" step="1" value="3" aria-label="Množství"><output>3</output></div>
+    <div class="sl"><span>cena P</span><input type="range" min="10" max="160" step="1" value="80" aria-label="Cena"><output>80 Kč</output></div>`;
+  const {svg,ex} = vizShell(root,{sliders, legend: lg(C.S,'TU – celkový užitek')+lg(C.B,'MU – mezní užitek')+lg(C.W,'cena P',1)});
+  const st = {q:3, p:80};
+  const T = frame({h:300,t:14,b:166,xmax:7.6,ymax:420});
+  const M = frame({h:300,t:158,b:24,xmax:7.6,ymax:200,ymin:-20});
+  const render = () => {
+    const q = Math.round(st.q), p = st.p;
+    let s = `<text x="44" y="12" fill="${C.mut}" font-size="11">TU (Kč)</text>
+      <line x1="44" y1="6" x2="44" y2="${T.Y(0)}" stroke="${C.ax}" stroke-width="1.5"/><line x1="44" y1="${T.Y(0)}" x2="428" y2="${T.Y(0)}" stroke="${C.ax}" stroke-width="1.5"/>
+      <line x1="44" y1="152" x2="44" y2="${M.Y(-20)}" stroke="${C.ax}" stroke-width="1.5"/><line x1="44" y1="${M.Y(0)}" x2="428" y2="${M.Y(0)}" stroke="${C.ax}" stroke-width="1.5"/>
+      <text x="50" y="150" fill="${C.mut}" font-size="11">MU (Kč)</text>`;
+    let d=''; for(let i=0;i<TU.length;i++) d+=(i?'L':'M')+T.X(i)+' '+T.Y(TU[i])+' ';
+    s += `<path d="${d}" stroke="${C.S}" stroke-width="2.6" fill="none"/>`;
+    for(let i=1;i<TU.length;i++){
+      const mu = TU[i]-TU[i-1], on = i<=q, buy = mu>=p;
+      const x0 = M.X(i-.38), x1 = M.X(i+.38), y = M.Y(Math.max(mu,0)), y0=M.Y(0), yy = M.Y(Math.min(mu,0));
+      s += `<rect x="${x0}" y="${mu>=0?y:y0}" width="${x1-x0}" height="${Math.abs((mu>=0?y0:yy)-(mu>=0?y:y0))}" rx="3" fill="${C.B}" opacity="${on?1:.25}"/>`;
+      s += `<text x="${(x0+x1)/2}" y="${(mu>=0?y:yy)+(mu>=0?-5:13)}" fill="${on?C.B:C.dim}" font-size="10.5" text-anchor="middle">${mu}</text>`;
+      s += `<text x="${(x0+x1)/2}" y="298" fill="${C.mut}" font-size="10.5" text-anchor="middle">${i}</text>`;
+      s += T.dot(i,TU[i], i<=q?C.S:C.dim, i===q?6:3.5);
+    }
+    s += `<line x1="44" y1="${M.Y(p)}" x2="428" y2="${M.Y(p)}" stroke="${C.W}" stroke-width="1.6" stroke-dasharray="6 4"/>`;
+    s += `<text x="428" y="${M.Y(p)-5}" fill="${C.W}" font-size="11" text-anchor="end">P = ${Math.round(p)}</text>`;
+    s += `<text x="${T.X(q)}" y="${T.Y(TU[q])-12}" fill="${C.S}" font-size="12" text-anchor="middle">TU=${TU[q]}</text>`;
+    svg.innerHTML = s;
+    root.querySelectorAll('output')[0].textContent = q;
+    root.querySelectorAll('output')[1].textContent = Math.round(p)+' Kč';
+    let opt=0; for(let i=1;i<TU.length;i++) if(TU[i]-TU[i-1]>=Math.round(p)) opt=i;
+    const cs = TU[q] - Math.round(p)*q;
+    ex.innerHTML = `Při Q = ${q}: TU = ${TU[q]} Kč, zaplatíš ${q}·${Math.round(p)} = ${q*Math.round(p)} Kč → <b>CS = ${cs} Kč</b>. `+
+      (q===opt ? `<b>Optimum</b> – další kus by měl MU < P.` : q<opt ? `Vyplatí se koupit další kus (jeho MU ≥ P). Optimum je Q = ${opt}.` : `Přestřelil jsi – poslední kus má MU < P. Optimum je Q = ${opt}.`)+
+      (q===7?' 7. kus má <b>MU záporný</b> → TU klesá (přesycení).':'');
+  };
+  const [i1,i2] = root.querySelectorAll('input'), to = tweener(st, render);
+  i1.oninput = () => { st.q=+i1.value; render(); };
+  i2.oninput = () => to({p:+i2.value}, 200);
+  render();
+}
+
+/* ---------- 2b: linie rozpočtu + indiferenční křivka ---------- */
+function vizBL(root){
+  const sliders = `<div class="sl"><span>důchod I</span><input type="range" min="1200" max="4000" step="100" value="2400" data-k="I" aria-label="Důchod"><output></output></div>
+    <div class="sl"><span>cena Px</span><input type="range" min="80" max="320" step="10" value="160" data-k="px" aria-label="Cena X"><output></output></div>
+    <div class="sl"><span>cena Py</span><input type="range" min="200" max="800" step="25" value="400" data-k="py" aria-label="Cena Y"><output></output></div>`;
+  const ctrls = `<button class="btn" data-a="px">Ponožky zdražily</button><button class="btn" data-a="I">Příjem ↑</button><button class="btn ghost" data-a="r">↺ zpět</button>`;
+  const {svg,ex} = vizShell(root,{sliders, ctrls, legend: lg(C.S,'BL – linie rozpočtu')+lg(C.B,'IC – indiferenční křivka')+lg(C.dim,'původní BL',1)});
+  const st = {I:2400, px:160, py:400};
+  const F = frame({xmax:42, ymax:16, l:40});
+  const render = () => {
+    const {I,px,py} = st, xm=I/px, ym=I/py, x0=I/(2*px), y0=I/(2*py), U=x0*y0;
+    let s = F.axes('X (ponožky)','Y (trička)');
+    s += F.line(0,6,15,0,C.dim,1.6,'6 5');
+    s += F.line(0,ym,xm,0,C.S,2.8);
+    s += `<path d="${F.fn(x=>U/x, Math.max(U/15.5,0.3), 42)}" stroke="${C.B}" stroke-width="2.4" fill="none"/>`;
+    s += F.guide(x0,y0) + F.dot(x0,y0,C.S) + F.txt(x0,y0,'E',C.S,13,'start',8,-8);
+    s += F.yt(ym,fmt(ym,1)) + F.xt(xm,fmt(xm,1));
+    s += F.txt(Math.min(xm,40),0,'BL',C.S,12,'end',0,-8);
+    svg.innerHTML = s;
+    const o = root.querySelectorAll('output');
+    o[0].textContent=Math.round(I); o[1].textContent=Math.round(px); o[2].textContent=Math.round(py);
+    ex.innerHTML = `Rovnice: <b>${Math.round(I)} = ${Math.round(px)}x + ${Math.round(py)}y</b>. Max. X = ${fmt(xm,1)}, max. Y = ${fmt(ym,1)}. Sklon BL = <span class="mono">Px/Py = ${fmt(px/py,2)}</span> = <b>MRS v optimu</b> (BL se dotýká IC).`;
+  };
+  const to = tweener(st, render);
+  const ins = root.querySelectorAll('input');
+  const sync = () => ins.forEach(i=>i.value=st[i.dataset.k]);
+  ins.forEach(i=>i.oninput=()=>to({[i.dataset.k]:+i.value},250));
+  root.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{
+    const a=b.dataset.a;
+    const t = a==='px'?{I:2400,px:240,py:400}: a==='I'?{I:3200,px:160,py:400}:{I:2400,px:160,py:400};
+    to(t); setTimeout(sync,720);
+    setTimeout(()=>{ if(a==='px') ex.innerHTML += '<br>Zdražení X <b>otočí</b> BL kolem bodu na ose Y – max. Y se nemění, max. X klesne.'; if(a==='I') ex.innerHTML += '<br>Vyšší příjem BL <b>posune rovnoběžně</b> ven – sklon zůstává.'; },760);
+  });
+  render();
+}
+
+/* ---------- 3: produkční funkce TP / AP / MP ---------- */
+function vizProd(root){
+  const a=50,b=25,c=3;
+  const TP=L=>a*L+b*L*L-c*L*L*L, AP=L=>a+b*L-c*L*L, MP=L=>a+2*b*L-3*c*L*L;
+  const sliders = `<div class="sl"><span>práce L</span><input type="range" min="0.5" max="7.5" step="0.1" value="2" aria-label="Práce"><output></output></div>`;
+  const {svg,ex} = vizShell(root,{sliders, legend: lg(C.S,'TP')+lg(C.B,'AP')+lg(C.W,'MP')});
+  const st={L:2};
+  const T = frame({h:300,t:14,b:166,xmax:7.6,ymax:620});
+  const M = frame({h:300,t:156,b:22,xmax:7.6,ymax:140,ymin:-60});
+  const Lmp=b/(3*c), Lap=b/(2*c), Ltp=(2*b+Math.sqrt(4*b*b+12*c*a))/(6*c);
+  const render = () => {
+    const L=st.L;
+    let s = `<line x1="44" y1="6" x2="44" y2="${T.Y(0)}" stroke="${C.ax}" stroke-width="1.5"/><line x1="44" y1="${T.Y(0)}" x2="428" y2="${T.Y(0)}" stroke="${C.ax}" stroke-width="1.5"/>
+     <line x1="44" y1="150" x2="44" y2="278" stroke="${C.ax}" stroke-width="1.5"/><line x1="44" y1="${M.Y(0)}" x2="428" y2="${M.Y(0)}" stroke="${C.ax}" stroke-width="1.5"/>
+     <text x="50" y="12" fill="${C.mut}" font-size="11">TP (Q)</text><text x="50" y="158" fill="${C.mut}" font-size="11">AP, MP</text><text x="428" y="294" fill="${C.mut}" font-size="11" text-anchor="end">L</text>`;
+    [[0,Lap,'I.'],[Lap,Ltp,'II.'],[Ltp,7.6,'III.']].forEach(([x0,x1,n],i)=>{
+      s += `<rect x="${T.X(x0)}" y="6" width="${T.X(x1)-T.X(x0)}" height="272" fill="${['#C6F432','#7AA2FF','#FF7A6B'][i]}" opacity="0.045"/>`;
+      s += `<text x="${(T.X(x0)+T.X(x1))/2}" y="130" fill="${C.dim}" font-size="11" text-anchor="middle">${n} st.</text>`;
+    });
+    [Lap,Ltp].forEach(x=> s+=`<line x1="${T.X(x)}" y1="6" x2="${T.X(x)}" y2="278" stroke="${C.dim}" stroke-dasharray="3 4"/>`);
+    s += `<path d="${T.fn(TP,0,7.6)}" stroke="${C.S}" stroke-width="2.6" fill="none"/>`;
+    s += `<path d="${M.fn(AP,0,7.6)}" stroke="${C.B}" stroke-width="2.4" fill="none"/>`;
+    s += `<path d="${M.fn(MP,0,7.6)}" stroke="${C.W}" stroke-width="2.4" fill="none"/>`;
+    s += `<line x1="${T.X(L)}" y1="6" x2="${T.X(L)}" y2="278" stroke="${C.D}" stroke-width="1" opacity=".5"/>`;
+    s += T.dot(L,TP(L),C.S,5.5) + M.dot(L,AP(L),C.B,5) + M.dot(L,MP(L),C.W,5);
+    svg.innerHTML = s;
+    root.querySelector('output').textContent = fmt(L,1);
+    const stage = L<Lap?'I.':L<Ltp?'II.':'III.';
+    ex.innerHTML = `L = ${fmt(L,1)}: TP = <b>${fmt(TP(L),1)}</b>, AP = ${fmt(AP(L),1)}, MP = ${fmt(MP(L),1)}. ${stage} stádium. `+
+      (L<Lmp?'MP roste – rostoucí výnosy.': L<Lap?'MP už klesá, ale je nad AP → AP ještě roste.': L<Ltp?'<b>Racionální stádium</b>: MP < AP, ale MP > 0.':'<b>MP < 0</b> – další pracovník produkci snižuje!');
+  };
+  const inp=root.querySelector('input'), to=tweener(st,render);
+  inp.oninput=()=>to({L:+inp.value},180);
+  render();
+}
+
+/* ---------- 4: náklady ---------- */
+function vizNaklady(root){
+  const sliders = `<div class="sl"><span>množství Q</span><input type="range" min="1" max="10" step="0.1" value="4" data-k="q" aria-label="Množství"><output></output></div>
+   <div class="sl"><span>fixní FC</span><input type="range" min="20" max="120" step="5" value="60" data-k="fc" aria-label="Fixní náklady"><output></output></div>`;
+  const {svg,ex} = vizShell(root,{sliders, legend: lg(C.S,'TC')+lg(C.B,'VC')+lg(C.mut,'FC')+lg(C.R,'MC')+lg(C.W,'AC')+lg(C.D,'AVC')});
+  const st={q:4, fc:60};
+  const VC=q=>30*q-6*q*q+.5*q*q*q, MC=q=>30-12*q+1.5*q*q, AVC=q=>30-6*q+.5*q*q;
+  const T = frame({h:300,t:14,b:166,xmax:10.4,ymax:340});
+  const M = frame({h:300,t:156,b:22,xmax:10.4,ymax:60});
+  const render=()=>{
+    const {q,fc}=st, TC=x=>fc+VC(x), AC=x=>fc/x+AVC(x);
+    let s = `<line x1="44" y1="6" x2="44" y2="${T.Y(0)}" stroke="${C.ax}" stroke-width="1.5"/><line x1="44" y1="${T.Y(0)}" x2="428" y2="${T.Y(0)}" stroke="${C.ax}" stroke-width="1.5"/>
+     <line x1="44" y1="150" x2="44" y2="${M.Y(0)}" stroke="${C.ax}" stroke-width="1.5"/><line x1="44" y1="${M.Y(0)}" x2="428" y2="${M.Y(0)}" stroke="${C.ax}" stroke-width="1.5"/>
+     <text x="50" y="12" fill="${C.mut}" font-size="11">Kč</text><text x="50" y="158" fill="${C.mut}" font-size="11">Kč / ks</text><text x="428" y="294" fill="${C.mut}" font-size="11" text-anchor="end">Q</text>`;
+    s += `<path d="${T.fn(()=>fc,0,10.4)}" stroke="${C.mut}" stroke-width="2" fill="none" stroke-dasharray="6 4"/>`;
+    s += `<path d="${T.fn(VC,0,10.4)}" stroke="${C.B}" stroke-width="2.4" fill="none"/>`;
+    s += `<path d="${T.fn(TC,0,10.4)}" stroke="${C.S}" stroke-width="2.6" fill="none"/>`;
+    s += `<path d="${M.fn(MC,0.3,10.4)}" stroke="${C.R}" stroke-width="2.4" fill="none"/>`;
+    s += `<path d="${M.fn(AVC,0.3,10.4)}" stroke="${C.D}" stroke-width="2.2" fill="none"/>`;
+    s += `<path d="${M.fn(AC,0.8,10.4)}" stroke="${C.W}" stroke-width="2.4" fill="none"/>`;
+    s += M.dot(6,AVC(6),C.D,4);
+    let qa=1; for(let x=1;x<10;x+=.01) if(MC(x)>=AC(x)){qa=x;break;}
+    s += M.dot(qa,AC(qa),C.W,4);
+    s += `<line x1="${T.X(q)}" y1="6" x2="${T.X(q)}" y2="${M.Y(0)}" stroke="${C.D}" opacity=".45"/>`;
+    s += T.dot(q,TC(q),C.S,5) + T.dot(q,VC(q),C.B,4.5) + M.dot(q,MC(q),C.R,4.5) + M.dot(q,AC(q),C.W,4.5) + M.dot(q,AVC(q),C.D,4.5);
+    s += `<line x1="${T.X(q)+10}" y1="${T.Y(TC(q))}" x2="${T.X(q)+10}" y2="${T.Y(VC(q))}" stroke="${C.mut}" stroke-width="1.5"/><text x="${T.X(q)+14}" y="${(T.Y(TC(q))+T.Y(VC(q)))/2+4}" fill="${C.mut}" font-size="10.5">FC</text>`;
+    svg.innerHTML=s;
+    const o=root.querySelectorAll('output'); o[0].textContent=fmt(q,1); o[1].textContent=Math.round(fc);
+    ex.innerHTML=`Q = ${fmt(q,1)}: TC = <b>${fmt(TC(q),1)}</b> = FC ${Math.round(fc)} + VC ${fmt(VC(q),1)}. AC = ${fmt(AC(q),1)}, AVC = ${fmt(AVC(q),1)}, MC = ${fmt(MC(q),1)}.<br>`+
+      `<b>MC protíná AVC i AC v jejich minimu.</b> Zkus posunout FC – AC se změní, ale MC a AVC ne!`;
+  };
+  const to=tweener(st,render);
+  root.querySelectorAll('input').forEach(i=>i.oninput=()=>to({[i.dataset.k]:+i.value},200));
+  render();
+}
+
+/* ---------- 5: příjmy a zisk ---------- */
+function vizZisk(root){
+  const sliders = `<div class="sl"><span>množství Q</span><input type="range" min="1" max="11" step="0.1" value="5" aria-label="Množství"><output></output></div>`;
+  const ctrls = `<button class="btn on" data-m="0">Dokonalá konkurence (P = 40)</button><button class="btn" data-m="1">Monopol (P = 100 − 5Q)</button>`;
+  const {svg,ex} = vizShell(root,{sliders, ctrls, legend: lg(C.S,'TR')+lg(C.D,'TC')+lg(C.B,'MR')+lg(C.R,'MC')});
+  const st={q:5, m:0};
+  const TC=q=>60+30*q-6*q*q+.5*q*q*q, MC=q=>30-12*q+1.5*q*q;
+  const T = frame({h:300,t:14,b:166,xmax:11.4,ymax:620});
+  const M = frame({h:300,t:156,b:22,xmax:11.4,ymax:110,ymin:-10});
+  const render=()=>{
+    const m=st.m, q=st.q;
+    const TR=x=>(1-m)*40*x + m*(100-5*x)*x, MR=x=>(1-m)*40 + m*(100-10*x);
+    let s = `<line x1="44" y1="6" x2="44" y2="${T.Y(0)}" stroke="${C.ax}" stroke-width="1.5"/><line x1="44" y1="${T.Y(0)}" x2="428" y2="${T.Y(0)}" stroke="${C.ax}" stroke-width="1.5"/>
+     <line x1="44" y1="150" x2="44" y2="${M.Y(-10)}" stroke="${C.ax}" stroke-width="1.5"/><line x1="44" y1="${M.Y(0)}" x2="428" y2="${M.Y(0)}" stroke="${C.ax}" stroke-width="1.5"/>
+     <text x="50" y="12" fill="${C.mut}" font-size="11">Kč</text><text x="50" y="158" fill="${C.mut}" font-size="11">Kč / ks</text><text x="428" y="294" fill="${C.mut}" font-size="11" text-anchor="end">Q</text>`;
+    const pi = TR(q)-TC(q);
+    s += `<line x1="${T.X(q)}" y1="${T.Y(TR(q))}" x2="${T.X(q)}" y2="${T.Y(TC(q))}" stroke="${pi>=0?C.S:C.R}" stroke-width="7" opacity=".35" stroke-linecap="round"/>`;
+    s += `<path d="${T.fn(TC,0,11.4)}" stroke="${C.D}" stroke-width="2.4" fill="none"/>`;
+    s += `<path d="${T.fn(TR,0,11.4)}" stroke="${C.S}" stroke-width="2.6" fill="none"/>`;
+    s += `<path d="${M.fn(MC,0.2,11.4)}" stroke="${C.R}" stroke-width="2.4" fill="none"/>`;
+    s += `<path d="${M.fn(MR,0,11.4)}" stroke="${C.B}" stroke-width="2.4" fill="none"/>`;
+    let qo=1; for(let x=4;x<11.4;x+=.005) if(MC(x)>=MR(x)){qo=x;break;}
+    s += M.dot(qo,MR(qo),C.S,5) + M.txt(qo,MR(qo),'MR = MC',C.S,11,'start',8,-8);
+    s += `<line x1="${T.X(q)}" y1="6" x2="${T.X(q)}" y2="${M.Y(-10)}" stroke="${C.D}" opacity=".4"/>`;
+    s += T.dot(q,TR(q),C.S,5) + T.dot(q,TC(q),C.D,5);
+    s += `<text x="${T.X(q)+10}" y="${(T.Y(TR(q))+T.Y(TC(q)))/2+4}" fill="${pi>=0?C.S:C.R}" font-size="12">π = ${fmt(pi,0)}</text>`;
+    svg.innerHTML=s;
+    root.querySelector('output').textContent=fmt(q,1);
+    ex.innerHTML=`Q = ${fmt(q,1)}: TR = ${fmt(TR(q),0)}, TC = ${fmt(TC(q),0)} → <b>π = ${fmt(pi,0)} Kč</b>. `+
+      `Zisk je nejvyšší při <b>Q ≈ ${fmt(qo,1)}</b>, kde MR = MC.` + (m? ' U monopolu MR klesá 2× rychleji než cena.' : ' V dokonalé konkurenci P = AR = MR.');
+  };
+  const to=tweener(st,render), inp=root.querySelector('input');
+  inp.oninput=()=>to({q:+inp.value},180);
+  root.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{root.querySelectorAll('[data-m]').forEach(x=>x.classList.toggle('on',x===b)); to({m:+b.dataset.m},800);});
+  render();
+}
+
+/* ---------- mini graf do řešení příkladů ---------- */
+function miniShift(sh){ // sh: 'D+','D-','S+','S-'
+  const F = frame({w:300,h:200,l:24,r:14,t:14,b:24,xmax:100,ymax:10});
+  const ds = sh==='D+'?22:sh==='D-'?-22:0, ss = sh==='S+'?22:sh==='S-'?-22:0;
+  const D=(q,d)=>9-0.08*(q-d), S=(q,s)=>1+0.08*(q-s);
+  let s = F.axes('Q','P');
+  s += `<path d="${F.fn(q=>D(q,0),0,100)}" stroke="${ds?C.dim:C.D}" stroke-width="2" fill="none" ${ds?'stroke-dasharray="5 4"':''}/>`;
+  s += `<path d="${F.fn(q=>S(q,0),0,100)}" stroke="${ss?C.dim:C.S}" stroke-width="2" fill="none" ${ss?'stroke-dasharray="5 4"':''}/>`;
+  if(ds) s += `<path d="${F.fn(q=>D(q,ds),0,100)}" stroke="${C.D}" stroke-width="2.6" fill="none"/>` + F.txt(96,D(96,ds),"D'",C.D,12,'end',0,-8);
+  if(ss) s += `<path d="${F.fn(q=>S(q,ss),0,100)}" stroke="${C.S}" stroke-width="2.6" fill="none"/>` + F.txt(96,S(96,ss),"S'",C.S,12,'end',0,16);
+  const q1=50+(ds+ss)/2, p1=D(q1,ds);
+  s += F.dot(50,5,C.dim,4) + F.dot(q1,p1,C.S,5) + F.txt(q1,p1,"E'",C.S,11,'start',7,-6);
+  return `<svg viewBox="0 0 300 200" role="img" aria-label="Graf posunu křivky">${s}</svg>`;
+}
+
+const VIZ = { trh:vizTrh, trhCena:vizTrhCena, tu:vizTU, bl:vizBL, prod:vizProd, naklady:vizNaklady, zisk:vizZisk };
+
+/* ===== Témata a látka ===== */
+const TOPICS = [
+{ id:'trh', n:'01', name:'Trh a rovnováha', desc:'Poptávka, nabídka, posuny křivek, tržní rovnováha, stát na trhu.',
+  sections:[
+  { t:'Poptávka a nabídka', viz:'trh', html:`
+    <p><b>Poptávka (D)</b> = kolik toho kupující chtějí koupit při různých cenách. Platí <b>zákon klesající poptávky</b>: čím vyšší cena, tím menší poptávané množství → křivka D klesá.</p>
+    <p><b>Nabídka (S)</b> = kolik toho firmy chtějí prodat při různých cenách. Čím vyšší cena, tím víc se vyplatí vyrábět → křivka S roste.</p>
+    <div class="key"><span class="k">Pohyb PO křivce</span> = změnila se cena daného statku.<br><span class="k">Posun CELÉ křivky</span> = změnilo se něco jiného (příjem, ceny jiných statků, náklady…).</div>
+    <p><b>Co posouvá poptávku:</b></p>
+    <ul><li>důchod (příjmy) spotřebitelů</li><li>ceny <b>substitutů</b> (náhrad – čaj × káva) a <b>komplementů</b> (doplňků – auto + benzín)</li><li>preference, módu, očekávání, počet kupujících</li></ul>
+    <p><b>Co posouvá nabídku:</b></p>
+    <ul><li>ceny vstupů – mzdy, suroviny, energie (náklady ↑ → S doleva)</li><li>technologie (→ S doprava)</li><li>daně (→ doleva) a dotace (→ doprava)</li><li>počet firem, počasí u zemědělství, ceny výrobních komplementů</li></ul>
+    <p>Doprava = <b>zvýšení</b>, doleva = <b>snížení</b>. Klikej na tlačítka u grafu.</p>`},
+  { t:'Tržní rovnováha', viz:'trhCena', html:`
+    <p><b>Rovnováha E</b> je bod, kde se protne D a S. Platí <b>Qd = Qs</b> – kolik chtějí kupující koupit, tolik chtějí firmy prodat.</p>
+    <div class="key"><span class="k">P &gt; P*</span> → Qs &gt; Qd → <b>přebytek</b> → cena klesá<br><span class="k">P &lt; P*</span> → Qd &gt; Qs → <b>nedostatek</b> → cena roste</div>
+    <p>Příklad z hodiny – <b>trh trdelníků</b>: při ceně 60 Kč je poptávané i nabízené množství 190 ks. To je rovnováha. Hýbej cenou a uvidíš přebytek nebo nedostatek.</p>
+    <p>Když máš funkce <span class="mono">Qd = a − bP</span> a <span class="mono">Qs = c + dP</span>, dáš je do rovnosti a vypočítáš P*, pak dosadíš a máš Q*.</p>`},
+  { t:'Jak číst posun rovnováhy', html:`
+    <div class="key">D doprava → P ↑, Q ↑<br>D doleva  → P ↓, Q ↓<br>S doprava → P ↓, Q ↑<br>S doleva  → P ↑, Q ↓</div>
+    <p>Postup u každého příkladu „určete a graficky znázorněte“: 1) <b>Týká se změna kupujících, nebo výrobců?</b> → D nebo S. 2) <b>Zvýší se, nebo sníží?</b> → doprava nebo doleva. 3) Nakresli novou křivku a nový bod E'.</p>
+    <p>Pozor na chytáky: změna <b>ceny samotného statku</b> křivku neposouvá – jen se pohybuješ po ní. A na trhu elektřiny je zemní plyn substitut <b>ve spotřebě</b> (týká se D), ale uhlí je <b>výrobní</b> komplement (týká se S).</p>`},
+  { t:'Stát na trhu', html:`
+    <p>Stát není jen „rozhodčí“. Na trzích vystupuje ve všech rolích:</p>
+    <ul><li><b>kupující na trhu práce</b> – zaměstnává učitele, úředníky, policisty</li><li><b>prodávající na trhu výrobků a služeb</b> – státní podniky, poplatky</li><li><b>kupující na trhu půdy</b> – výkup pozemků pro dálnice</li></ul>
+    <p>Do trhu zasahuje <b>daněmi</b> (S doleva), <b>dotacemi</b> (S doprava), regulací cen (cenový strop → nedostatek, cenová podlaha / min. mzda → přebytek).</p>`}
+  ]},
+{ id:'spotr', n:'02', name:'Chování spotřebitele', desc:'Kardinalisté (TU, MU), ordinalisté (IC, BL, MRS), optimum spotřebitele.',
+  sections:[
+  { t:'Kardinalistický přístup', viz:'tu', html:`
+    <p>Kardinalisté tvrdí: <b>„užitek je měřitelný“</b> – dá se vyjádřit v korunách.</p>
+    <p><b>TU – celkový užitek</b>: celkové uspokojení ze spotřeby. Chápe se jako maximální částka, kterou je spotřebitel ochoten zaplatit.</p>
+    <p><b>MU – mezní užitek</b>: o kolik TU vzroste s další jednotkou. <span class="mono">MU = ΔTU / ΔQ</span> – v tabulce prostě odečítáš sousední TU.</p>
+    <div class="key"><span class="k">Zákon klesajícího MU:</span> každý další kus přináší menší užitek.<br><span class="k">Bod nasycení:</span> MU = 0 → TU je maximální.<br>MU &lt; 0 → TU klesá (kladné TU, záporné MU).</div>
+    <p><b>Optimum (1 statek):</b> kupuju, dokud <b>MU ≥ P</b>. Optimum je <span class="mono">MU = P</span>.</p>
+    <p><b>Spotřebitelský přebytek</b> <span class="mono">CS = TU − P·Q</span> – kolik bych max. dal minus kolik jsem fakt zaplatil. Šel jsi nakoupit s 5000, věc koupíš za 4000 → přebytek 1000.</p>`},
+  { t:'Více statků – rovnováha', html:`
+    <p>Když kupuju dva statky, peníze rozdělím tak, aby poslední koruna dala u obou stejný užitek:</p>
+    <div class="key"><span class="k">MUx / Px = MUy / Py</span></div>
+    <p>Příklad 6/34: karty P = 80, MU = 80 → poměr 1. Mince za 120 Kč musí mít MU = 120 · 1 = <b>120 Kč</b>.</p>`},
+  { t:'Ordinalistický přístup', viz:'bl', html:`
+    <p>Ordinalisté: <b>„užitek měřit nelze“</b> – spotřebitel umí jen varianty porovnat a seřadit.</p>
+    <p><b>Indiferenční křivka (IC)</b> = všechny kombinace statků X a Y se stejným užitkem (1 rum + 7 vodek = 2 rumy + 5 vodek). Vlastnosti: klesá, je konvexní, neprotínají se, <b>čím dál od počátku, tím vyšší užitek</b> (IC₁ &lt; IC₂ &lt; IC₃) – to je indiferenční mapa.</p>
+    <p><b>Linie rozpočtu (BL)</b> = co si můžu dovolit za celý důchod:</p>
+    <div class="key"><span class="k">I = Px·x + Py·y</span><br>průsečík s osou X = I / Px<br>průsečík s osou Y = I / Py</div>
+    <p><b>Optimum</b> je tam, kde se BL dotýká nejvyšší dosažitelné IC. V tom bodě platí:</p>
+    <div class="key"><span class="k">MRS = MUx / MUy = Px / Py</span></div>
+    <p>MRS = mezní míra substituce – kolik Y jsem ochoten dát za další jednotku X.</p>
+    <p>Změna <b>ceny</b> BL <b>otočí</b>, změna <b>důchodu</b> ji <b>posune rovnoběžně</b>.</p>`}
+  ]},
+{ id:'prod', n:'03', name:'Produkční funkce', desc:'TP, AP, MP, zákon klesajících výnosů, krátké a dlouhé období.',
+  sections:[
+  { t:'Produkční funkce', viz:'prod', html:`
+    <p><b>Produkční funkce</b> ukazuje, kolik produkce Q firma vyrobí z daného množství výrobních faktorů (práce L, kapitál K).</p>
+    <p><b>Krátké období</b> – aspoň jeden faktor je fixní (kapitál), firma mění jen práci. <b>Dlouhé období</b> – všechny faktory jsou variabilní, firma mění i velikost provozu.</p>
+    <div class="key"><span class="k">TP</span> = Q = celková produkce<br><span class="k">AP</span> = TP / L = průměrný produkt (na 1 pracovníka)<br><span class="k">MP</span> = ΔTP / ΔL = mezní produkt (co přidá další pracovník)</div>
+    <p>Pro <span class="mono">Q = aL + bL² − cL³</span>:</p>
+    <div class="key">AP = a + bL − cL²<br>MP = a + 2bL − 3cL² (derivace)<br>přírůstek n-té jednotky = TP(n) − TP(n−1)</div>
+    <p><b>Zákon klesajících výnosů</b>: při přidávání práce k fixnímu kapitálu MP od určitého bodu klesá.</p>
+    <p><b>MP protíná AP v maximu AP.</b> Když MP = 0, je TP maximální. Racionální je II. stádium (od max. AP po max. TP).</p>`}
+  ]},
+{ id:'naklady', n:'04', name:'Náklady firmy', desc:'FC, VC, TC, MC, AFC, AVC, AC – tabulky i nákladové funkce.',
+  sections:[
+  { t:'Druhy nákladů', viz:'naklady', html:`
+    <p><b>Fixní náklady FC</b> nezávisí na objemu výroby – nájem, odpisy, pojištění. Platíš je i při Q = 0. <b>Variabilní VC</b> rostou s výrobou – materiál, energie, úkolové mzdy.</p>
+    <div class="key"><span class="k">TC = FC + VC</span><br>AFC = FC / Q &nbsp; AVC = VC / Q<br>AC = TC / Q = AFC + AVC<br><span class="k">MC = ΔTC / ΔQ</span> = TC(n) − TC(n−1)</div>
+    <p><b>Doplňování tabulky</b> (př. 1/57): FC = TC při Q = 0. VC = TC − FC. MC = rozdíl sousedních TC. Průměry = vydělit Q.</p>
+    <p><b>Nákladová funkce</b> STC = 5000 + 20Q − 3Q² + 10Q³: číslo bez Q je <b>FC</b> (stejné při 200 i 4000 ks!). Zbytek je <b>VC</b>.</p>
+    <p><b>MC protíná AVC i AC v jejich minimech.</b> AFC pořád klesá (fixní náklady se „rozpouští“ do víc kusů). Křivky AC a AVC se k sobě s rostoucím Q přibližují.</p>`},
+  { t:'Ekonomické vs. účetní náklady', html:`
+    <p><b>Explicitní náklady</b> = skutečné platby (mzdy, materiál). <b>Implicitní náklady</b> = ušlé příležitosti (můj čas, vlastní kapitál, který mohl vydělávat jinde) – <b>náklady obětované příležitosti</b>.</p>
+    <div class="key">účetní náklady = explicitní<br>ekonomické náklady = explicitní + implicitní</div>`}
+  ]},
+{ id:'zisk', n:'05', name:'Příjmy a zisk', desc:'TR, AR, MR, zisk π = TR − TC, maximalizace zisku MR = MC.',
+  sections:[
+  { t:'Příjmy firmy', viz:'zisk', html:`
+    <p>Příjmy = tržby z prodeje produkce.</p>
+    <div class="key"><span class="k">TR = P × Q</span> celkový příjem<br>AR = TR / Q = P průměrný příjem<br><span class="k">MR = ΔTR / ΔQ</span> mezní příjem</div>
+    <p><b>Dokonalá konkurence</b>: firma cenu neovlivní → P je konstantní, TR je přímka a <b>P = AR = MR</b>.</p>
+    <p><b>Nedokonalá konkurence</b> (monopol): aby prodala víc, musí zlevnit → TR je „kopec“, MR &lt; P a klesá rychleji.</p>`},
+  { t:'Zisk a jeho maximalizace', html:`
+    <div class="key"><span class="k">π = TR − TC</span><br>Cílem firmy je maximalizace zisku.<br>Zisk je max. tam, kde <span class="k">MR = MC</span></div>
+    <p>Logika: dokud další kus přinese víc (MR), než stojí (MC), vyplatí se ho vyrobit. Jakmile MC &gt; MR, další kus zisk snižuje.</p>
+    <p><b>Účetní zisk</b> = TR − explicitní náklady. <b>Ekonomický zisk</b> = TR − ekonomické náklady (i implicitní). <b>Normální zisk</b> = ekonomický zisk 0 – firma vydělá stejně jako v nejlepší alternativě.</p>
+    <p><b>Bod zvratu</b> = TR = TC, zisk 0.</p>`}
+  ]}
+];
+
+const FORMULAS = [
+ ['trh','Qd = Qs','rovnováha trhu'],
+ ['trh','P > P* → přebytek','Qs > Qd, cena klesá'],
+ ['trh','P < P* → nedostatek','Qd > Qs, cena roste'],
+ ['spotr','MU = ΔTU / ΔQ','mezní užitek'],
+ ['spotr','MU = P','optimum (1 statek)'],
+ ['spotr','CS = TU − P·Q','spotřebitelský přebytek'],
+ ['spotr','MUx / Px = MUy / Py','rovnováha u více statků'],
+ ['spotr','I = Px·x + Py·y','linie rozpočtu'],
+ ['spotr','MRS = MUx / MUy = Px / Py','mezní míra substituce v optimu'],
+ ['prod','AP = TP / L','průměrný produkt'],
+ ['prod','MP = ΔTP / ΔL','mezní produkt'],
+ ['prod','Q = aL + bL² − cL³ → MP = a + 2bL − 3cL²','derivace produkční funkce'],
+ ['naklady','TC = FC + VC','celkové náklady'],
+ ['naklady','AFC = FC/Q · AVC = VC/Q · AC = TC/Q','průměrné náklady'],
+ ['naklady','MC = ΔTC / ΔQ','mezní náklady'],
+ ['zisk','TR = P × Q','celkový příjem'],
+ ['zisk','AR = TR / Q','průměrný příjem (= P)'],
+ ['zisk','MR = ΔTR / ΔQ','mezní příjem'],
+ ['zisk','π = TR − TC','zisk'],
+ ['zisk','MR = MC','maximalizace zisku']
+];
+
+/* ===== Příklady ===== */
+const CATS = {
+  trh:[['posuny','Posuny křivek','Slovní zadání – která křivka a kam (jako př. 2/21)'],['tabulka','Rovnováha z tabulky','Najdi P* a Q* (jako trdelníky 3/21)'],['funkce','Rovnováha z funkcí','Qd = Qs, dopočítej P* a Q*'],['mimo','Přebytek a nedostatek','Co se děje, když cena není rovnovážná'],['teorie','Pojmy a teorie','Kvízové otázky z přednášky']],
+  spotr:[['tumu','TU, MU a optimum','Z tabulky TU dopočítej MU, optimum a CS (jako 6/34)'],['vice','Rovnováha více statků','MUx/Px = MUy/Py'],['bl','Linie rozpočtu','Rovnice BL, max. X a Y, MRS (jako 7/35)'],['graf','Čtení z grafu','Z průsečíků BL urči důchod a ceny (jako 9/36)'],['teorie','Pojmy a teorie','Kardinalisté, ordinalisté, IC']],
+  prod:[['tp','Celková produkce TP','Dosazení do produkční funkce (jako 4/47)'],['ap','Průměrný produkt AP','AP = TP / L'],['mp','Mezní produkt MP','Derivace produkční funkce'],['prir','Přírůstek produkce','TP(n) − TP(n−1) (jako 6/47 e)'],['max','Maxima AP a MP','Kde AP a MP vrcholí'],['teorie','Pojmy a teorie','Krátké/dlouhé období, stádia výroby']],
+  naklady:[['tab','Doplňování tabulky','FC, VC, MC, AFC, AVC, AC (jako 1/57)'],['fce','Nákladová funkce','STC = FC + … (jako 2/58)'],['teorie','Pojmy a teorie','Druhy nákladů, vztahy křivek']],
+  zisk:[['tr','TR, AR, MR','Příjmy firmy z tabulky'],['pi','Výpočet zisku','π = TR − TC'],['opt','Maximalizace zisku','Najdi Q s nejvyšším ziskem'],['teorie','Pojmy a teorie','Konkurence, druhy zisku']]
+};
+
+const nf = (v,d=2) => { const r=Math.round(v*Math.pow(10,d))/Math.pow(10,d); return r.toLocaleString('cs-CZ',{maximumFractionDigits:d}); };
+const frc = (a,b) => `<span class="fr"><span>${a}</span><span>${b}</span></span>`;
+const tbl = (rows) => `<div class="tw"><table class="t">${rows.map((r,i)=>`<tr>${r.map(c=>i===0?`<th>${c}</th>`:`<td>${c}</td>`).join('')}</tr>`).join('')}</table></div>`;
+const tblH = (rows) => `<div class="tw"><table class="t">${rows.map(r=>`<tr>${r.map((c,j)=>j===0?`<th>${c}</th>`:`<td>${c}</td>`).join('')}</tr>`).join('')}</table></div>`;
+function rng(seed){ return function(){ seed|=0; seed=seed+0x6D2B79F5|0; let t=Math.imul(seed^seed>>>15,1|seed); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+const ri = (r,a,b) => a+Math.floor(r()*(b-a+1));
+const pk = (r,arr) => arr[Math.floor(r()*arr.length)];
+function shuffle(arr, r){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
+
+const QS = [];
+function add(topic, cat, o){ QS.push(Object.assign({id: topic+'-'+cat+'-'+(QS.filter(q=>q.topic===topic&&q.cat===cat).length+1), topic, cat}, o)); }
+// mc s první odpovědí správnou -> zamíchá se
+function mc(topic, cat, q, opts, sol, extra={}){
+  const r = rng(QS.length*7919+13);
+  const order = shuffle(opts.map((_,i)=>i), r);
+  add(topic, cat, Object.assign({type:'mc', q, opts: order.map(i=>opts[i]), ans: order.indexOf(0), sol}, extra));
+}
+function num(topic, cat, q, fields, sol, extra={}){ add(topic, cat, Object.assign({type:'num', q, fields, sol}, extra)); }
+
+/* ================= TRH ================= */
+const SHIFT = ['Poptávka se zvýší (D doprava)','Poptávka se sníží (D doleva)','Nabídka se zvýší (S doprava)','Nabídka se sníží (S doleva)'];
+const SH_KEY = ['D+','D-','S+','S-'];
+function shift(src, market, event, ans, why){
+  add('trh','posuny',{type:'mc', src, q:`<b>${market}:</b> ${event}. Jak se to projeví?`, opts:SHIFT, ans, viz:SH_KEY[ans],
+    sol: why + '\n' + ['→ nová rovnováha: <span class="k">P ↑, Q ↑</span>','→ nová rovnováha: <span class="k">P ↓, Q ↓</span>','→ nová rovnováha: <span class="k">P ↓, Q ↑</span>','→ nová rovnováha: <span class="k">P ↑, Q ↓</span>'][ans]});
+}
+const EL='Český trh elektrické energie';
+shift('Př. 2/21 a',EL,'vláda rozhodla o ukončení činnosti všech jaderných elektráren',3,'Ubude výrobců elektřiny → týká se nabídky, která klesne.');
+shift('Př. 2/21 b',EL,'důchod spotřebitelů se snížil',1,'Důchod ovlivňuje kupující → poptávka klesne.');
+shift('Př. 2/21 c',EL,'cena zemního plynu (je-li substitutem ve spotřebě) se ztrojnásobila',0,'Substitut zdražil → lidi přejdou k elektřině (topení elektřinou místo plynu) → poptávka roste.');
+shift('Př. 2/21 d',EL,'vláda snížila sazbu DPH u elektrické energie',2,'Nižší daň snižuje náklady prodeje → firmy nabídnou víc za stejnou cenu → S doprava.');
+shift('Př. 2/21 e',EL,'vláda firmám snížila sazby povinných odvodů z mezd',2,'Nižší odvody = nižší náklady výrobců → nabídka roste.');
+shift('Př. 2/21 f',EL,'vláda začala poskytovat dotace na vybudování obnovitelných zdrojů energie',2,'Dotace snižují náklady výroby → víc výrobců → S doprava.');
+shift('Př. 2/21 g',EL,'spotřebitelé upřednostňují jízdu v elektromobilech (komplement ve spotřebě) před spalovacími motory',0,'Elektromobil potřebuje elektřinu – komplement roste v oblibě → poptávka po elektřině roste.');
+shift('Př. 2/21 i',EL,'hospodářství prošlo strukturální změnou, která zvýšila podíl průmyslu na HDP',0,'Průmysl spotřebuje hodně energie → víc kupujících elektřiny → poptávka roste.');
+shift('Př. 2/21 j',EL,'v oblastech s vysokou mírou fotovoltaických elektráren je aktuálně nízká sluneční aktivita',3,'Málo slunce = soláry vyrobí méně → nabídka klesne.');
+shift('Př. kávy a','Český trh s kávou','výrazně vzrostly mzdy zaměstnanců kaváren',3,'Mzdy jsou náklad kaváren → vyšší náklady → nabídka klesne.');
+shift('Př. kávy b','Český trh s kávou','spotřebitelům vzrostly příjmy',0,'Káva je normální statek → s vyšším příjmem lidi kupují víc → D doprava.');
+shift('Př. kávy c','Český trh s kávou','cena čaje, který spotřebitelé považují za substitut kávy, výrazně poklesla',1,'Čaj zlevnil → část lidí přejde z kávy na čaj → poptávka po kávě klesne.');
+shift('','Trh piva','výrazně zdražil chmel a slad',3,'Suroviny = náklady pivovarů → nabídka klesne.');
+shift('','Trh hranolek ve fastfoodech','kečup výrazně zdražil (komplement)',1,'Komplement zdražil → hranolky s kečupem jsou dražší zážitek → poptávka po hranolkách klesne.');
+shift('','Trh vlakových jízdenek','benzín výrazně zdražil a lidé méně jezdí autem',0,'Auto je substitut vlaku. Jízda autem zdražila → lidé přejdou na vlak → D doprava.');
+shift('','Trh másla','margarín (substitut) výrazně zlevnil',1,'Levnější substitut odláká kupující → poptávka po másle klesne.');
+shift('','Trh smartphonů','nová technologie výrazně zlevnila výrobu displejů',2,'Levnější výroba → firmy nabídnou víc → S doprava.');
+shift('','Trh zmrzliny','přišlo extrémně horké léto',0,'Počasí změnilo preference kupujících → poptávka roste.');
+shift('','Trh obilí','dobré počasí přineslo rekordní úrodu',2,'Úroda je na straně výrobců (farmářů) → nabídka roste.');
+shift('','Trh obilí','dlouhé sucho zničilo část úrody',3,'Méně vypěstovaného obilí → nabídka klesne.');
+shift('','Trh cigaret','stát zvýšil spotřební daň',3,'Daň zvyšuje náklady prodeje → S doleva.');
+shift('','Trh bytů v Pardubicích','do města se přistěhovaly tisíce nových obyvatel',0,'Víc kupujících (nájemníků) → poptávka roste.');
+shift('','Trh nejlevnějších těstovin (méněcenný statek)','příjmy domácností výrazně vzrostly',1,'Chyták! U méněcenného statku s vyšším příjmem lidi kupují méně (přejdou na lepší) → D doleva.');
+shift('','Trh benzínu','lidé očekávají, že benzín příští týden výrazně zdraží',0,'Očekávání vyšší ceny → lidi tankují do zásoby hned → poptávka dnes roste.');
+shift('','Trh pečiva ve městě','otevřely se 3 nové pekárny',2,'Víc prodávajících → nabídka roste.');
+shift('','Trh mléka','stát zavedl dotace pro chovatele dojnic',2,'Dotace snižují náklady farmářů → S doprava.');
+
+mc('trh','teorie','Stát může vystupovat jako:',['všechny uvedené varianty (kupující na trhu práce, prodávající výrobků a služeb, kupující na trhu půdy)','pouze kupující na trhu práce','pouze prodávající na trhu výrobků a služeb','žádná z uvedených odpovědí není správná'],'Stát zaměstnává lidi (kupuje práci), prodává služby a vykupuje pozemky – <span class="k">všechny role</span>.',{src:'Kvíz z hodiny'});
+mc('trh','teorie','Bod rovnováhy na trhu obilí se posunul z E do E′ – E′ má <b>nižší cenu a vyšší množství</b>. Čím byla změna nejspíš způsobena?',['dobré počasí způsobilo posun nabídky','dobré počasí způsobilo posun poptávky','špatné počasí způsobilo posun nabídky','příjem spotřebitele se změnil, což způsobilo posun nabídky'],'Nižší P a vyšší Q = <span class="k">nabídka doprava</span>. Počasí ovlivňuje farmáře (nabídku), ne kupující. Dobré počasí → víc úrody.',{src:'Kvíz z hodiny',viz:'S+'});
+mc('trh','teorie','Co způsobí <b>pohyb po křivce</b> poptávky (ne posun celé křivky)?',['změna ceny daného statku','změna důchodu spotřebitelů','změna ceny substitutu','změna preferencí'],'Po křivce se pohybuješ jen při změně <span class="k">vlastní ceny</span> statku. Všechno ostatní posouvá celou křivku.');
+mc('trh','teorie','Zákon klesající poptávky říká, že:',['s rostoucí cenou klesá poptávané množství','s rostoucím příjmem klesá poptávka','s rostoucí cenou klesá nabízené množství','poptávka vždy klesá v čase'],'Vyšší cena → lidi koupí méně. Proto křivka D klesá zleva doprava.');
+mc('trh','teorie','Které statky jsou <b>komplementy</b>?',['auto a benzín','čaj a káva','máslo a margarín','vlak a autobus'],'Komplementy se spotřebovávají <span class="k">spolu</span> (doplňují se). Ostatní dvojice jsou substituty (nahrazují se).');
+mc('trh','teorie','Cena na trhu je <b>vyšší</b> než rovnovážná. Co nastane?',['přebytek – nabízené množství převyšuje poptávané, cena bude klesat','nedostatek – cena bude růst','trh je v rovnováze','poptávka se posune doprava'],'P > P* → Qs > Qd → <span class="k">přebytek</span>. Prodejci zlevňují, dokud se nedostanou k P*.');
+mc('trh','teorie','Stát zavede <b>cenový strop</b> pod úrovní rovnovážné ceny. Výsledkem bude:',['nedostatek zboží','přebytek zboží','posun nabídky doprava','žádná změna'],'Strop drží cenu pod P* → lidi chtějí víc, než se nabízí → <span class="k">nedostatek</span> (fronty, podpultové prodeje).');
+mc('trh','teorie','Zároveň se <b>poptávka zvýší a nabídka sníží</b>. Co platí jistě?',['cena vzroste, změna množství je neurčitá','množství vzroste, cena je neurčitá','cena i množství klesnou','cena klesne, množství vzroste'],'D doprava i S doleva tlačí <span class="k">cenu nahoru</span>. Na množství působí opačně – záleží, která změna je silnější.');
+mc('trh','teorie','Minimální mzda nastavená <b>nad</b> rovnovážnou mzdou na trhu práce vede k:',['přebytku práce – nezaměstnanosti','nedostatku pracovníků','posunu poptávky po práci doprava','rovnováze trhu práce'],'Cenová podlaha nad rovnováhou → nabízí se víc práce, než firmy chtějí → <span class="k">nezaměstnanost</span>.');
+
+// rovnováha z tabulky
+for(let k=0;k<7;k++){
+  const r=rng(100+k);
+  const b=pk(r,[2,3,4,5]), d=pk(r,[4,5,6,8,10]), step=pk(r,[5,5,10]);
+  const Pst = step*ri(r,6,14), Qst = 10*ri(r, Math.ceil((3*step*d+20)/10), 40);
+  const a=Qst+b*Pst, c=d*Pst-Qst;
+  const ps=[]; const off=ri(r,1,4); for(let i=0;i<6;i++) ps.push(Pst+(i-off)*step);
+  const goods = ['trdelníků','langošů','palačinek','kebabů','bubble tea','vstupenek na koncert','koláčů'];
+  const rows=[['Cena (Kč)',...ps],['Qd',...ps.map(p=>a-b*p)],['Qs',...ps.map(p=>d*p-c)]];
+  num('trh','tabulka', `Trh ${goods[k]} popisuje tabulka. Urči <b>rovnovážnou cenu a množství</b>.${tblH(rows)}`,
+    [{l:'P*',ans:Pst,unit:'Kč'},{l:'Q*',ans:Qst,unit:'ks'}],
+    `Hledám řádek, kde <span class="k">Qd = Qs</span>.\nPři P = ${Pst}: Qd = ${Qst}, Qs = ${Qst}\nP* = ${Pst} Kč, Q* = ${Qst} ks\nNad touto cenou je přebytek, pod ní nedostatek.`,{src:k===0?'podle př. 3/21':''});
+}
+num('trh','tabulka',`Trh trdelníků (Tabulka 2.1). Urči rovnovážnou cenu a množství.${tblH([['Cena (Kč/ks)',45,50,55,60,65,70],['Poptávané',250,230,210,190,170,150],['Nabízené',40,90,140,190,240,290]])}`,
+  [{l:'P*',ans:60,unit:'Kč'},{l:'Q*',ans:190,unit:'ks'}],'Při P = 60: Qd = 190 = Qs\n<span class="k">E = [60 Kč ; 190 ks]</span>\nPři vyšší ceně přebytek → tlak na zlevnění, při nižší nedostatek → tlak na zdražení.',{src:'Př. 3/21'});
+
+// rovnováha z funkcí
+for(let k=0;k<8;k++){
+  const r=rng(300+k);
+  const b=ri(r,2,8), d=ri(r,2,10), Pst=ri(r,8,60), Qst=10*ri(r,8,60);
+  const a=Qst+b*Pst, c=d*Pst-Qst; // Qs = dP - c
+  const qs = c>0 ? `${d}P − ${c}` : `${-c} + ${d}P`;
+  num('trh','funkce',`Poptávka: <b>Qd = ${a} − ${b}P</b>, nabídka: <b>Qs = ${qs}</b>. Urči rovnovážnou cenu a množství.`,
+    [{l:'P*',ans:Pst,unit:'Kč'},{l:'Q*',ans:Qst,unit:'ks'}],
+    `Qd = Qs\n${a} − ${b}P = ${qs}\n${a} ${c>0?'+ '+c:'− '+(-c)} = ${d}P + ${b}P\n${a+c} = ${b+d}P\n<span class="k">P* = ${Pst}</span>\nQ* = ${a} − ${b}·${Pst} = <span class="k">${Qst}</span>`);
+}
+// přebytek / nedostatek
+for(let k=0;k<5;k++){
+  const r=rng(500+k);
+  const b=ri(r,2,6), d=ri(r,3,9), Pst=ri(r,15,50), Qst=10*ri(r,10,40);
+  const a=Qst+b*Pst, c=d*Pst-Qst; const up = k%2===0; const P1 = Pst + (up?1:-1)*ri(r,3,8);
+  const qd=a-b*P1, qs=d*P1-c, gap=Math.abs(qs-qd), wrong=Math.abs(gap+ri(r,1,4)*b);
+  const qsS = c>0?`${d}P − ${c}`:`${-c} + ${d}P`;
+  mc('trh','mimo',`Qd = ${a} − ${b}P, Qs = ${qsS}. Stát nařídí cenu <b>${P1} Kč</b>. Co nastane na trhu?`,
+    [ (up?'přebytek ':'nedostatek ')+gap+' ks', (up?'nedostatek ':'přebytek ')+gap+' ks', (up?'přebytek ':'nedostatek ')+wrong+' ks', 'trh bude v rovnováze'],
+    `Při P = ${P1}:\nQd = ${a} − ${b}·${P1} = ${qd}\nQs = ${d}·${P1} ${c>0?'− '+c:'+ '+(-c)} = ${qs}\n${up?'Qs > Qd → <span class="k">přebytek '+gap+' ks</span>':'Qd > Qs → <span class="k">nedostatek '+gap+' ks</span>'}\n(Rovnovážná cena je ${Pst} Kč.)`);
+}
+
+/* ================= SPOTŘEBITEL ================= */
+for(let k=0;k<9;k++){
+  const r=rng(700+k);
+  const mus=[ri(r,120,200)]; for(let i=1;i<6;i++) mus.push(Math.max(2, mus[i-1]-ri(r,8,45)));
+  const TU=[]; mus.reduce((s,m,i)=>(TU[i]=s+m, s+m),0);
+  const opt=ri(r,2,4), P=mus[opt-1];
+  const cs = TU[opt-1]-P*opt;
+  const items=['sběratelských karet','kopečků zmrzliny','lístků do kina','párků v rohlíku','energetických nápojů','piv na festivalu','hodin bowlingu','koblih','výletů lodí'];
+  num('spotr','tumu',`Marek kupuje ${items[k]} racionálně – jeho představa ceny odpovídá meznímu užitku. Tržní cena jednoho kusu je <b>${P} Kč</b>. Urči optimální množství a spotřebitelský přebytek.${tblH([['Q (ks)',1,2,3,4,5,6],['TU (Kč)',...TU]])}`,
+   [{l:'optimální Q',ans:opt,unit:'ks'},{l:'CS',ans:cs,unit:'Kč'}],
+   `MU = rozdíl sousedních TU:\nMU = ${mus.join(', ')}\nOptimum: <span class="k">MU = P = ${P}</span> → Q = ${opt}\nCS = TU − P·Q = ${TU[opt-1]} − ${P}·${opt} = <span class="k">${cs} Kč</span>`, {src:k===0?'podle př. 6/34':''});
+}
+num('spotr','tumu',`Marek kupuje sběratelské karty, cena jedné je <b>80 Kč</b>. Jaké množství zakoupí a jaký bude jeho spotřebitelský přebytek?${tblH([['Q (kusy)',1,2,3,4,5,6],['TU (Kč)',155,244,324,366,390,400]])}`,
+  [{l:'Q',ans:3,unit:'ks'},{l:'CS',ans:84,unit:'Kč'}],'MU: 155, 89, 80, 42, 24, 10\nMU = P = 80 při Q = 3\nCS = 324 − 3·80 = 324 − 240 = <span class="k">84 Kč</span>',{src:'Př. 6/34'});
+for(let k=0;k<4;k++){
+  const r=rng(800+k); const mu=pk(r,[155,89,80,42,24,10,60,120]);
+  const TU=[155,244,324,366,390,400].map(v=>v+k*15); const q=ri(r,2,6);
+  num('spotr','tumu',`Z tabulky urči <b>mezní užitek ${q}. kusu</b>.${tblH([['Q',1,2,3,4,5,6],['TU (Kč)',...TU]])}`,[{l:'MU'+q,ans:TU[q-1]-TU[q-2],unit:'Kč'}],`MU${q} = TU${q} − TU${q-1} = ${TU[q-1]} − ${TU[q-2]} = <span class="k">${TU[q-1]-TU[q-2]} Kč</span>`);
+}
+// více statků
+num('spotr','vice','Marek je v rovnováze u sběratelských karet (P = 80 Kč, MU = 80 Kč). Přemýšlí i o pamětních mincích, jejichž cena je <b>120 Kč</b>. Jaký MU by musel mít z mincí, aby byl při nákupu obou statků v rovnováze?',
+  [{l:'MU mince',ans:120,unit:'Kč'}],`${frc('MUk','Pk')} = ${frc('MUm','Pm')}\n${frc('80','80')} = ${frc('MUm','120')}\nMUm = 1 · 120 = <span class="k">120 Kč</span>`,{src:'Př. 6/34 – 2. část'});
+for(let k=0;k<5;k++){
+  const r=rng(900+k); const px=pk(r,[20,25,40,50,60,80]), ratio=pk(r,[0.5,1.5,2,2.5,3]), py=pk(r,[10,30,40,100,120]);
+  const mux=px*ratio, muy=py*ratio;
+  num('spotr','vice',`Statek X stojí ${px} Kč a jeho MU je ${nf(mux)}. Statek Y stojí <b>${py} Kč</b>. Jaký musí být MU statku Y, aby byl spotřebitel v rovnováze?`,
+    [{l:'MUy',ans:muy,unit:''}],`${frc('MUx','Px')} = ${frc('MUy','Py')}\n${frc(nf(mux),px)} = ${frc('MUy',py)}\nMUy = ${nf(ratio)} · ${py} = <span class="k">${nf(muy)}</span>`);
+}
+mc('spotr','vice','Spotřebitel má MUx / Px = 4 a MUy / Py = 2. Jak má změnit nákup, aby zvýšil užitek?',['koupit víc X a méně Y','koupit víc Y a méně X','nic neměnit, je v rovnováze','koupit víc obou statků bez ohledu na rozpočet'],'Koruna utracená za X přináší větší užitek (4 > 2) → přesunu peníze k X. Jak kupuju víc X, MUx klesá, až se poměry vyrovnají.');
+
+// linie rozpočtu
+const BLSEEN=new Set();
+for(let k=0,sd=0;k<8;sd++){
+  const r=rng(1000+sd);
+  const px=pk(r,[20,40,50,80,100,120,160,200]), py=pk(r,[25,50,100,200,250,400]);
+  const xm=pk(r,[10,12,15,20,24,30]); const I=px*xm; const ym=I/py;
+  if(!Number.isInteger(ym) || BLSEEN.has(I+'/'+px+'/'+py)) continue; BLSEEN.add(I+'/'+px+'/'+py); k++;
+  num('spotr','bl',`Důchod spotřebitele je <b>${I} Kč</b>, cena statku X je ${px} Kč, cena statku Y ${py} Kč. Kolik maximálně koupí X (nic z Y) a kolik maximálně Y (nic z X)?`,
+   [{l:'max X',ans:xm,unit:'ks'},{l:'max Y',ans:ym,unit:'ks'}],`Rovnice BL: ${I} = ${px}x + ${py}y\nmax X = ${frc('I','Px')} = ${frc(I,px)} = <span class="k">${xm}</span>\nmax Y = ${frc('I','Py')} = ${frc(I,py)} = <span class="k">${nf(ym)}</span>`);
+}
+num('spotr','bl','Karel si měsíčně přivydělá <b>2400 Kč</b> a vše utratí za ponožky (X, 160 Kč/balení) a trička (Y, 400 Kč/ks). Ve stavu rovnováhy koupí 5 balení ponožek. Kolik triček si koupí?',
+  [{l:'Y',ans:4,unit:'ks'}],'2400 = 160x + 400y\n2400 = 160·5 + 400y\n2400 − 800 = 400y\n1600 = 400y\n<span class="k">y = 4 trička</span>',{src:'Př. 7/35 b'});
+num('spotr','bl','Karel: I = 2400, Px = 160, Py = 400. Vypočti <b>MRS<sub>XY</sub></b> v bodě optima (jako desetinné číslo).',
+  [{l:'MRS',ans:0.4,unit:''}],`MRS = ${frc('MUx','MUy')} = ${frc('Px','Py')} = ${frc(160,400)} = ${frc(2,5)} = <span class="k">0,4</span>`,{src:'Př. 7/35 c'});
+mc('spotr','bl','Karel (I = 2400, Px = 160, Py = 400): cena ponožek vzroste na <b>200 Kč</b>. Jak se změní linie rozpočtu?',['otočí se – max. X klesne z 15 na 12, max. Y zůstane 6','posune se rovnoběžně doleva','otočí se – max. Y klesne na 4, max. X zůstane 15','nezmění se'],'Změna ceny X mění jen průsečík s osou X:\nmax X = 2400 / 200 = <span class="k">12</span> (předtím 15)\nmax Y = 2400 / 400 = 6 – beze změny\nBL se otočí kolem bodu na ose Y.',{src:'Př. 7/35 d'});
+mc('spotr','bl','Karel (I = 2400, Px = 160, Py = 400): cena triček klesne o 100 Kč. Nová rovnice a max. Y?',['2400 = 160x + 300y, max. Y = 8','2400 = 60x + 400y, max. Y = 6','2400 = 160x + 500y, max. Y = 4,8','2300 = 160x + 400y, max. Y = 5,75'],'Py = 400 − 100 = 300\n2400 = 160x + 300y\nmax Y = 2400 / 300 = <span class="k">8</span>, max X zůstává 15.',{src:'Př. 7/35 e'});
+mc('spotr','bl','Karel: při původních cenách (160 a 400 Kč) se jeho příjem zvýší na <b>3200 Kč</b>. Co se stane s BL?',['posune se rovnoběžně – max. X = 20, max. Y = 8','otočí se kolem osy Y','posune se rovnoběžně – max. X = 15, max. Y = 6','posune se dovnitř'],'3200 = 160x + 400y\nmax X = 3200/160 = 20, max Y = 3200/400 = 8\nSklon (Px/Py) se nemění → <span class="k">rovnoběžný posun ven</span>.',{src:'Př. 7/35 f'});
+mc('spotr','bl','Jaká je správná rovnice linie rozpočtu pro I = 1800, Px = 30, Py = 90?',['1800 = 30x + 90y','1800 = 90x + 30y','30 = 1800x + 90y','1800 = (30 + 90)·x'],'Obecně <span class="k">I = Px·x + Py·y</span> → 1800 = 30x + 90y.');
+
+// z grafu
+num('spotr','graf','Z obrázku: linie rozpočtu protíná osu Y v bodě <b>80</b> a osu X v bodě <b>60</b>. Cena X je Px = 20 Kč. Urči důchod a cenu Y.',
+  [{l:'I',ans:1200,unit:'Kč'},{l:'Py',ans:15,unit:'Kč'}],'I = max X · Px = 60 · 20 = <span class="k">1200 Kč</span>\nPy = I / max Y = 1200 / 80 = <span class="k">15 Kč</span>',{src:'Př. 9/36 a, b'});
+num('spotr','graf','Pokračování 9/36 (I = 1200, Px = 20, Py = 15): urči MRS v bodě optima.',[{l:'MRS',ans:4/3,unit:'',tol:0.01}],`MRS = ${frc('Px','Py')} = ${frc(20,15)} = ${frc(4,3)} ≈ <span class="k">1,33</span>`,{src:'Př. 9/36 c'});
+num('spotr','graf','Pokračování 9/36: cena X vzroste na <b>25 Kč</b> (I = 1200, Py = 15). Urči novou MRS a nový průsečík BL s osou X.',[{l:'MRS',ans:5/3,unit:'',tol:0.01},{l:'max X',ans:48,unit:''}],`MRS = ${frc(25,15)} = ${frc(5,3)} ≈ <span class="k">1,67</span>\nmax X = 1200 / 25 = <span class="k">48</span> (osa Y zůstává 80)`,{src:'Př. 9/36 e'});
+for(let k=0;k<4;k++){
+  const r=rng(1200+k); const px=pk(r,[10,20,25,40,50]), xm=pk(r,[20,30,40,50,60]), I=px*xm; const ym=pk(r,[10,20,25,40,50,80].filter(v=>I%v===0)); const py=I/ym;
+  num('spotr','graf',`BL protíná osu Y v bodě <b>${ym}</b> a osu X v bodě <b>${xm}</b>. Cena X je ${px} Kč. Urči důchod, cenu Y a MRS v optimu.`,
+   [{l:'I',ans:I,unit:'Kč'},{l:'Py',ans:py,unit:'Kč'},{l:'MRS',ans:px/py,unit:'',tol:0.01}],`I = ${xm} · ${px} = <span class="k">${I}</span>\nPy = ${I} / ${ym} = <span class="k">${nf(py)}</span>\nMRS = Px / Py = ${px} / ${nf(py)} = <span class="k">${nf(px/py)}</span>`);
+}
+mc('spotr','teorie','Kardinalistický přístup k užitku tvrdí, že:',['užitek je měřitelný (např. v Kč)','užitek měřit nelze, lze jen řadit varianty','užitek závisí jen na ceně','užitek je u všech lidí stejný'],'Kardinalisté = <span class="k">užitek je měřitelný</span>. Ordinalisté = jen pořadí.');
+mc('spotr','teorie','Ordinalistický přístup tvrdí, že:',['spotřebitel umí varianty jen porovnat a seřadit podle preferencí','užitek lze přesně změřit v korunách','mezní užitek vždy roste','spotřebitel nemá preference'],'Ordinalisté: <span class="k">užitek měřit nelze</span>, jen seřadit → indiferenční analýza.');
+mc('spotr','teorie','Zákon klesajícího mezního užitku znamená:',['každá další jednotka přináší zpravidla menší přírůstek užitku','celkový užitek vždy klesá','cena s množstvím klesá','první jednotka má nejmenší užitek'],'MU klesá, TU ale dál roste (jen pomaleji) – dokud je MU kladný.');
+mc('spotr','teorie','Celkový užitek je <b>kladný</b> a mezní užitek <b>záporný</b>. Kde na křivce TU jsme?',['za bodem nasycení – TU klesá','před bodem nasycení – TU roste','přesně v bodě nasycení','taková situace nemůže nastat'],'MU < 0 → TU klesá, ale může být stále kladný. Jsme <span class="k">za maximem TU</span> (bod nasycení MU = 0).');
+mc('spotr','teorie','Bod nasycení nastává, když:',['MU = 0 a TU je maximální','TU = 0','MU je maximální','MU = P'],'Při <span class="k">MU = 0</span> už další kus nic nepřidá → TU je na maximu.');
+mc('spotr','teorie','Indiferenční křivka zobrazuje:',['kombinace statků X a Y se stejným užitkem','kombinace, které si spotřebitel může dovolit','vztah ceny a poptávaného množství','celkový užitek z jednoho statku'],'IC = <span class="k">stejný užitek</span>. To, co si můžu dovolit, ukazuje linie rozpočtu.');
+mc('spotr','teorie','Co platí o indiferenční mapě?',['křivky dále od počátku představují vyšší užitek','křivky blíž počátku mají vyšší užitek','křivky se protínají v optimu','všechny křivky mají stejný užitek'],'IC₁ < IC₂ < IC₃ – <span class="k">čím dál od počátku, tím víc</span> obou statků a vyšší užitek.');
+mc('spotr','teorie','Optimum spotřebitele (ordinalisté) je v bodě, kde:',['linie rozpočtu se dotýká nejvyšší dosažitelné indiferenční křivky','IC protíná osu X','BL protíná osu Y','spotřebitel koupí jen jeden statek'],'V bodě dotyku platí <span class="k">MRS = Px / Py</span>.');
+mc('spotr','teorie','Spotřebitelský přebytek je:',['rozdíl mezi částkou, kterou je spotřebitel ochoten zaplatit, a částkou, kterou skutečně zaplatil','zisk prodávajícího','zboží, které na trhu zbylo','rozdíl mezi TU a MU'],'<span class="k">CS = TU − P·Q</span>. Jdu nakoupit s 5000, koupím za 4000 → přebytek 1000.');
+mc('spotr','teorie','Optimální množství jednoho statku podle kardinalistů je tam, kde:',['MU = P','TU = P','MU = 0','TU je maximální'],'Kupuju, dokud mi další kus dá aspoň tolik, kolik stojí → <span class="k">MU = P</span>.');
+mc('spotr','teorie','Zvýšení důchodu spotřebitele (ceny beze změny) způsobí, že linie rozpočtu se:',['posune rovnoběžně směrem od počátku','otočí kolem osy Y','posune k počátku','nezmění'],'Oba průsečíky (I/Px, I/Py) se zvětší ve stejném poměru → <span class="k">rovnoběžný posun ven</span>.');
+mc('spotr','teorie','MRS (mezní míra substituce) vyjadřuje:',['kolik jednotek Y je spotřebitel ochoten obětovat za další jednotku X při stejném užitku','poměr důchodu a ceny','sklon křivky poptávky','rozdíl TU a MU'],'MRS = MUx / MUy, v optimu se rovná <span class="k">Px / Py</span>.');
+
+/* ================= PRODUKCE ================= */
+const PF = [[350,5,1],[50,25,3],[100,20,2],[200,10,1],[60,12,1],[40,30,2],[150,15,1],[80,18,2],[30,24,1],[120,9,1]];
+const pq = (a,b,c) => `Q = ${a}L + ${b}L² − ${c===1?'':c}L³`;
+const TPf=(a,b,c,L)=>a*L+b*L*L-c*L*L*L;
+num('prod','tp','Produkci firmy charakterizuje krátkodobá produkční funkce <b>Q = 350L + 5L² − L³</b>. Urči celkový objem produkce při zaměstnání 10 pracovníků.',
+  [{l:'Q',ans:TPf(350,5,1,10),unit:''}],'Q = 350·10 + 5·10² − 10³\nQ = 3500 + 500 − 1000\n<span class="k">Q = 3000</span>',{src:'Př. 4/47 a'});
+num('prod','ap','Q = 350L + 5L² − L³. Urči průměrný produkt 5 dělníků.',[{l:'AP',ans:TPf(350,5,1,5)/5,unit:''}],
+  'TP(5) = 1750 + 125 − 125 = 1750\nAP = TP / L = 1750 / 5 = <span class="k">350</span>\n(nebo AP = 350 + 5L − L² = 350 + 25 − 25)',{src:'Př. 4/47 b'});
+num('prod','tp','Firma Kámen: <b>Q = 50L + 25L² − 3L³</b>. Urči celkový objem produkce pro 5 jednotek práce.',[{l:'Q',ans:TPf(50,25,3,5),unit:''}],
+  'Q = 50·5 + 25·25 − 3·125\nQ = 250 + 625 − 375\n<span class="k">Q = 500</span>',{src:'Př. 6/47 a'});
+num('prod','ap','Firma Kámen: Q = 50L + 25L² − 3L³. Urči průměrný produkt práce pro 4 jednotky práce.',[{l:'AP',ans:50+25*4-3*16,unit:''}],
+  'AP = Q / L = 50 + 25L − 3L²\nAP(4) = 50 + 100 − 48 = <span class="k">102</span>',{src:'Př. 6/47 b, c'});
+num('prod','mp','Firma Kámen: Q = 50L + 25L² − 3L³. Rovnice MP je MP = 50 + 50L − 9L². Urči MP při L = 2.',[{l:'MP',ans:50+100-36,unit:''}],
+  'MP = derivace Q podle L\nMP = 50 + 2·25L − 3·3L² = 50 + 50L − 9L²\nMP(2) = 50 + 100 − 36 = <span class="k">114</span>',{src:'Př. 6/47 d'});
+num('prod','prir','Firma Kámen: Q = 50L + 25L² − 3L³. Urči přírůstek produkce vyvolaný <b>3. jednotkou</b> práce (rozdílem, ne derivací).',[{l:'ΔQ',ans:TPf(50,25,3,3)-TPf(50,25,3,2),unit:''}],
+  `TP(3) = 150 + 225 − 81 = 294\nTP(2) = 100 + 100 − 24 = 176\nΔQ = 294 − 176 = <span class="k">118</span>`,{src:'Př. 6/47 e'});
+let pi_=0;
+for(const [a,b,c] of PF){
+  const r=rng(1400+pi_++); const L=ri(r,2,8);
+  const tp=TPf(a,b,c,L);
+  num('prod','tp',`Produkční funkce: <b>${pq(a,b,c)}</b>. Urči celkovou produkci při L = ${L}.`,[{l:'TP',ans:tp,unit:''}],
+    `TP = ${a}·${L} + ${b}·${L*L} − ${c}·${L*L*L}\nTP = ${a*L} + ${b*L*L} − ${c*L*L*L} = <span class="k">${tp}</span>`);
+  const L2=ri(r,2,7);
+  num('prod','ap',`Produkční funkce: <b>${pq(a,b,c)}</b>. Urči průměrný produkt práce při L = ${L2}.`,[{l:'AP',ans:a+b*L2-c*L2*L2,unit:''}],
+    `AP = TP / L = ${a} + ${b}L − ${c===1?'':c}L²\nAP(${L2}) = ${a} + ${b*L2} − ${c*L2*L2} = <span class="k">${a+b*L2-c*L2*L2}</span>`);
+  const L3=ri(r,1,6);
+  num('prod','mp',`Produkční funkce: <b>${pq(a,b,c)}</b>. Pomocí derivace urči mezní produkt při L = ${L3}.`,[{l:'MP',ans:a+2*b*L3-3*c*L3*L3,unit:''}],
+    `MP = ${a} + ${2*b}L − ${3*c}L²\nMP(${L3}) = ${a} + ${2*b*L3} − ${3*c*L3*L3} = <span class="k">${a+2*b*L3-3*c*L3*L3}</span>`);
+  if(pi_<=7){ const n=ri(r,2,6);
+  num('prod','prir',`Produkční funkce: <b>${pq(a,b,c)}</b>. O kolik vzroste produkce, když firma přijme ${n}. pracovníka?`,[{l:'ΔQ',ans:TPf(a,b,c,n)-TPf(a,b,c,n-1),unit:''}],
+    `TP(${n}) = ${TPf(a,b,c,n)}\nTP(${n-1}) = ${TPf(a,b,c,n-1)}\nΔQ = <span class="k">${TPf(a,b,c,n)-TPf(a,b,c,n-1)}</span>`);}
+}
+[[60,12,1],[40,30,2],[100,24,2],[50,18,3]].forEach(([a,b,c],i)=>{
+  if(i%2===0) num('prod','max',`<b>${pq(a,b,c)}</b>. Při jakém L je průměrný produkt maximální?`,[{l:'L',ans:b/(2*c),unit:''}],
+    `AP = ${a} + ${b}L − ${c===1?'':c}L²\nmax AP: derivace = 0 → ${b} − ${2*c}L = 0\n<span class="k">L = ${nf(b/(2*c))}</span>\n(v tomto bodě MP = AP)`);
+  else num('prod','max',`<b>${pq(a,b,c)}</b>. Při jakém L je mezní produkt maximální?`,[{l:'L',ans:b/(3*c),unit:''}],
+    `MP = ${a} + ${2*b}L − ${3*c}L²\nmax MP: ${2*b} − ${6*c}L = 0\n<span class="k">L = ${nf(b/(3*c))}</span>`);
+});
+mc('prod','teorie','Produkční funkce vyjadřuje:',['vztah mezi množstvím vstupů (výrobních faktorů) a maximálním objemem výroby','vztah mezi cenou a množstvím','náklady na jednotku produkce','příjmy firmy z prodeje'],'Q = f(L, K) – kolik maximálně vyrobím z daných faktorů.');
+mc('prod','teorie','Krátké období v teorii firmy znamená, že:',['alespoň jeden výrobní faktor je fixní','všechny faktory jsou variabilní','firma nic nevyrábí','trvá vždy méně než rok'],'V krátkém období nejde změnit např. velikost haly (K fixní), mění se jen práce. Není to o kalendářní délce!');
+mc('prod','teorie','Dlouhé období znamená, že:',['všechny výrobní faktory jsou variabilní','kapitál je fixní','práce je fixní','firma nemůže měnit výrobu'],'V dlouhém období může firma změnit vše – i velikost provozu a technologii.');
+mc('prod','teorie','Zákon klesajících výnosů říká, že:',['při přidávání variabilního faktoru k fixnímu od určitého bodu klesá mezní produkt','celková produkce vždy klesá','průměrný produkt vždy roste','výnosy z rozsahu jsou vždy klesající'],'Víc pracovníků na stejné strojích → každý další přidá méně (MP klesá).');
+mc('prod','teorie','Křivka MP protíná křivku AP:',['v maximu AP','v minimu AP','v maximu MP','v bodě, kde TP = 0'],'Dokud MP > AP, AP roste. Když MP < AP, AP klesá → protnutí je v <span class="k">maximu AP</span>.');
+mc('prod','teorie','Celková produkce TP je maximální, když:',['MP = 0','AP = 0','MP = AP','MP je maximální'],'Dokud MP > 0, další pracovník TP zvyšuje. Při <span class="k">MP = 0</span> je TP na vrcholu.');
+mc('prod','teorie','Ve kterém stádiu výroby se racionální firma pohybuje?',['ve II. – mezi maximem AP a maximem TP','v I. – dokud roste AP','ve III. – MP je záporný','v žádném'],'V I. stádiu se vyplatí přidat pracovníky (AP roste), ve III. je MP < 0. Racionální je <span class="k">II. stádium</span>.');
+mc('prod','teorie','Mezní produkt práce (MP) je:',['přírůstek celkové produkce při zvýšení práce o jednotku','celková produkce dělená počtem pracovníků','celková produkce','náklad na pracovníka'],'MP = ΔTP / ΔL. Průměrný produkt je AP = TP / L.');
+mc('prod','teorie','Mezní produkt je záporný. Co to znamená?',['další pracovník celkovou produkci snižuje','produkce roste rychleji','průměrný produkt roste','firma je v optimu'],'Pracovníci si překáží – <span class="k">III. stádium</span>, TP klesá.');
+mc('prod','teorie','Jak časový horizont ovlivňuje rozhodování firmy?',['v krátkém období mění firma jen variabilní faktory, v dlouhém může měnit všechny i kombinace faktorů','v krátkém období může změnit kapitál i práci','v dlouhém období je vše fixní','časový horizont nehraje roli'],'Otázka z 6/47: krátké období = fixní K, firma mění L. Dlouhé = může zvolit novou kombinaci L a K (jiná technologie, velikost).',{src:'Př. 6/47 – otázka'});
+
+/* ================= NÁKLADY ================= */
+function costTable(fc, mcs){ const tc=[fc]; mcs.forEach((m,i)=>tc.push(tc[i]+m)); return tc; }
+function tabQ(fc, mcs, ks, src){
+  const tc=costTable(fc,mcs); const qs=tc.map((_,i)=>i);
+  ks.forEach(k=>{
+    const vc=tc[k]-fc, mc_=tc[k]-tc[k-1], afc=fc/k, avc=vc/k, ac=tc[k]/k;
+    num('naklady','tab',`Doplň tabulku pro <b>Q = ${k}</b>.${tblH([['Q',...qs],['TC',...tc]])}`,
+      [{l:'FC',ans:fc},{l:'VC',ans:vc},{l:'MC',ans:mc_},{l:'AFC',ans:afc,tol:0.01},{l:'AVC',ans:avc,tol:0.01},{l:'AC',ans:ac,tol:0.01}],
+      `FC = TC(0) = <span class="k">${fc}</span>\nVC = TC − FC = ${tc[k]} − ${fc} = <span class="k">${vc}</span>\nMC = TC(${k}) − TC(${k-1}) = ${tc[k]} − ${tc[k-1]} = <span class="k">${mc_}</span>\nAFC = ${frc(fc,k)} = <span class="k">${nf(afc)}</span>\nAVC = ${frc(vc,k)} = <span class="k">${nf(avc)}</span>\nAC = ${frc(tc[k],k)} = <span class="k">${nf(ac)}</span>`,{src});
+  });
+}
+tabQ(200,[10,10,20,40,80,160],[3,5],'Př. 1/57');
+tabQ(120,[40,30,25,30,45,70],[2,4]);
+tabQ(300,[60,50,45,50,60,90],[3,6]);
+tabQ(150,[25,20,15,20,30,50],[1,5]);
+tabQ(80,[30,20,20,30,50,80],[4,2]);
+tabQ(240,[50,40,30,40,60,100],[3,4]);
+// nákladová funkce
+num('naklady','fce','Krátkodobá nákladová funkce malé zemědělské firmy: <b>STC = 5000 + 20Q − 3Q² + 10Q³</b>. Urči:',
+  [{l:'a) FC při 200 ks',ans:5000},{l:'b) FC při 4000 ks',ans:5000},{l:'c) AFC při 200 ks',ans:25},{l:'d) VC při 5 ks',ans:1275},{l:'e) AVC při 3 ks',ans:101},{l:'f) MC 4. kusu',ans:369},{l:'g) TC při 8 ks',ans:10088}],
+  'a, b) FC = 5000 – fixní náklady na Q nezávisí!\nc) AFC = 5000 / 200 = 25\nd) VC = 20·5 − 3·25 + 10·125 = 100 − 75 + 1250 = 1275\ne) VC(3) = 60 − 27 + 270 = 303 → AVC = 303 / 3 = 101\nf) MC4 = TC(4) − TC(3) = VC(4) − VC(3) = 672 − 303 = 369\ng) TC(8) = 5000 + 160 − 192 + 5120 = 10088',{src:'Př. 2/58'});
+const CF=[[1000,30,2,1],[2000,50,4,2],[800,40,3,1],[1500,60,5,1],[600,25,2,1],[3000,100,6,2],[1200,45,3,2],[2500,80,4,1]];
+const cfs=(f,a,b,c)=>`STC = ${f} + ${a}Q − ${b}Q² + ${c===1?'':c}Q³`;
+const VCf=(a,b,c,q)=>a*q-b*q*q+c*q*q*q;
+CF.forEach(([f,a,b,c],i)=>{
+  const r=rng(1700+i);
+  const kind=i%4;
+  if(kind===0){ const q=pk(r,[2,4,5,10]); num('naklady','fce',`<b>${cfs(f,a,b,c)}</b>. Urči AFC a AVC při Q = ${q}.`,[{l:'AFC',ans:f/q,tol:0.01},{l:'AVC',ans:VCf(a,b,c,q)/q,tol:0.01}],
+    `AFC = ${frc(f,q)} = <span class="k">${nf(f/q)}</span>\nAVC = ${a} − ${b}Q + ${c===1?'':c}Q² = ${a} − ${b*q} + ${c*q*q} = <span class="k">${nf(VCf(a,b,c,q)/q)}</span>`); }
+  if(kind===1){ const q=ri(r,3,8); num('naklady','fce',`<b>${cfs(f,a,b,c)}</b>. Urči mezní náklady ${q}. kusu (rozdílem TC).`,[{l:'MC'+q,ans:VCf(a,b,c,q)-VCf(a,b,c,q-1)}],
+    `MC${q} = TC(${q}) − TC(${q-1})\nFC se odečte, stačí VC:\nVC(${q}) = ${VCf(a,b,c,q)}, VC(${q-1}) = ${VCf(a,b,c,q-1)}\nMC = <span class="k">${VCf(a,b,c,q)-VCf(a,b,c,q-1)}</span>`); }
+  if(kind===2){ const q=ri(r,3,10); num('naklady','fce',`<b>${cfs(f,a,b,c)}</b>. Urči VC a TC při Q = ${q}.`,[{l:'VC',ans:VCf(a,b,c,q)},{l:'TC',ans:f+VCf(a,b,c,q)}],
+    `VC = ${a}·${q} − ${b}·${q*q} + ${c}·${q*q*q} = <span class="k">${VCf(a,b,c,q)}</span>\nTC = FC + VC = ${f} + ${VCf(a,b,c,q)} = <span class="k">${f+VCf(a,b,c,q)}</span>`); }
+  if(kind===3){ const q=pk(r,[100,500,1000]); num('naklady','fce',`<b>${cfs(f,a,b,c)}</b>. Kolik jsou fixní náklady při produkci ${q} ks a kolik AFC?`,[{l:'FC',ans:f},{l:'AFC',ans:f/q,tol:0.01}],
+    `FC = <span class="k">${f}</span> (člen bez Q – nemění se s výrobou)\nAFC = ${frc(f,q)} = <span class="k">${nf(f/q)}</span>`); }
+  const q2=ri(r,2,6);
+  num('naklady','fce',`<b>${cfs(f,a,b,c)}</b>. Urči průměrné celkové náklady AC při Q = ${q2}.`,[{l:'AC',ans:(f+VCf(a,b,c,q2))/q2,tol:0.01}],
+    `TC(${q2}) = ${f} + ${VCf(a,b,c,q2)} = ${f+VCf(a,b,c,q2)}\nAC = ${frc(f+VCf(a,b,c,q2),q2)} = <span class="k">${nf((f+VCf(a,b,c,q2))/q2)}</span>`);
+});
+mc('naklady','teorie','Které náklady jsou <b>fixní</b>?',['nájem výrobní haly','spotřeba materiálu','úkolová mzda dělníků','energie pro stroje'],'Nájem platíš, i když nic nevyrobíš → <span class="k">FC</span>. Ostatní rostou s výrobou (VC).');
+mc('naklady','teorie','Které náklady jsou <b>variabilní</b>?',['suroviny na výrobu','pojištění budovy','odpisy budovy','plat ředitele'],'Suroviny rostou s počtem vyrobených kusů → <span class="k">VC</span>.');
+mc('naklady','teorie','Jaké jsou celkové náklady při nulové produkci (krátké období)?',['rovnají se fixním nákladům','nulové','rovnají se variabilním nákladům','nelze určit'],'Při Q = 0 je VC = 0, takže <span class="k">TC = FC</span>.');
+mc('naklady','teorie','Křivka MC protíná křivky AVC a AC:',['v jejich minimech','v jejich maximech','nikdy','jen v dlouhém období'],'Dokud MC < AC, průměr klesá; když MC > AC, roste. Protnutí = <span class="k">minimum</span>.');
+mc('naklady','teorie','Jak se chovají průměrné fixní náklady AFC s rostoucí produkcí?',['neustále klesají','neustále rostou','nejprve klesají, pak rostou','jsou konstantní'],'Stejné FC se dělí víc kusy → AFC <span class="k">pořád klesá</span>.');
+mc('naklady','teorie','Mezní náklady (MC) jsou:',['přírůstek celkových nákladů při zvýšení produkce o jednotku','celkové náklady dělené množstvím','fixní náklady na kus','náklady při nulové výrobě'],'MC = ΔTC / ΔQ = TC(n) − TC(n−1).');
+mc('naklady','teorie','Proč se křivky AC a AVC s rostoucím Q k sobě přibližují?',['jejich rozdíl je AFC, které s rostoucím Q klesá','protože MC klesá','protože FC roste','nepřibližují se'],'AC − AVC = <span class="k">AFC</span>, a ta se s rostoucím Q zmenšuje.');
+mc('naklady','teorie','Náklady obětované příležitosti (implicitní) jsou:',['hodnota nejlepší alternativy, které se vzdávám','skutečné výdaje firmy','pouze daně','náklady na reklamu'],'Např. podnikatel by jako zaměstnanec vydělal 40 000 – to je implicitní náklad jeho času.');
+mc('naklady','teorie','Ekonomické náklady se rovnají:',['explicitním + implicitním nákladům','pouze explicitním nákladům','pouze implicitním nákladům','fixním nákladům'],'Účetní náklady = explicitní. <span class="k">Ekonomické = explicitní + implicitní</span>.');
+mc('naklady','teorie','Firma zvýší nájem (fixní náklad). Která křivka se <b>nezmění</b>?',['MC','AC','TC','AFC'],'MC = změna TC při dalším kusu – fixní složka se odečte. AC, TC a AFC se posunou nahoru.');
+mc('naklady','teorie','Pokud mezní náklady jsou nižší než průměrné náklady (MC < AC), pak AC:',['klesají','rostou','jsou na maximu','jsou nulové'],'Další kus je levnější než průměr → průměr <span class="k">klesá</span>.');
+mc('naklady','teorie','Kde leží minimum AVC vzhledem k minimu AC?',['při nižším Q než minimum AC','při vyšším Q než minimum AC','ve stejném bodě','AVC nemá minimum'],'MC protne nejdřív AVC (níž) a pak AC – minimum AVC je <span class="k">vlevo</span> od minima AC.');
+
+/* ================= PŘÍJMY A ZISK ================= */
+for(let k=0;k<5;k++){
+  const r=rng(2000+k); const P=pk(r,[20,25,40,50,80,120]); const Q=ri(r,3,12);
+  num('zisk','tr',`Firma v dokonalé konkurenci prodává za tržní cenu <b>${P} Kč</b>. Urči TR, AR a MR při prodeji ${Q} kusů.`,
+   [{l:'TR',ans:P*Q,unit:'Kč'},{l:'AR',ans:P,unit:'Kč'},{l:'MR',ans:P,unit:'Kč'}],`TR = P × Q = ${P} × ${Q} = <span class="k">${P*Q}</span>\nAR = TR / Q = <span class="k">${P}</span>\nMR = ΔTR / ΔQ = <span class="k">${P}</span>\nV dokonalé konkurenci P = AR = MR.`);
+}
+for(let k=0;k<6;k++){
+  const r=rng(2100+k); const a=pk(r,[100,120,150,200,60]), b=pk(r,[5,10,4,8]); const ps=[1,2,3,4,5,6].map(q=>a-b*q);
+  const q=ri(r,2,6); const tr=q*ps[q-1], trp=(q-1)*ps[q-2];
+  num('zisk','tr',`Monopol může prodat víc jen při nižší ceně:${tblH([['Q',1,2,3,4,5,6],['P (Kč)',...ps]])}Urči TR, AR a MR pro Q = ${q}.`,
+   [{l:'TR',ans:tr},{l:'AR',ans:ps[q-1]},{l:'MR',ans:tr-trp}],`TR = ${q} × ${ps[q-1]} = <span class="k">${tr}</span>\nAR = ${tr} / ${q} = <span class="k">${ps[q-1]}</span> (= cena)\nMR = TR(${q}) − TR(${q-1}) = ${tr} − ${trp} = <span class="k">${tr-trp}</span>\nMR < P – kvůli zlevnění všech kusů.`);
+}
+for(let k=0;k<10;k++){
+  const r=rng(2200+k); const P=pk(r,[30,40,50,60,80,100]), Q=ri(r,10,60), fc=pk(r,[200,300,500,800]), avc=pk(r,[10,15,20,25,35,45]);
+  const tr=P*Q, tc=fc+avc*Q, pi=tr-tc;
+  num('zisk','pi',`Firma prodá <b>${Q} ks</b> za ${P} Kč. Fixní náklady jsou ${fc} Kč, variabilní náklady na kus (AVC) ${avc} Kč. Urči TR, TC a zisk.`,
+   [{l:'TR',ans:tr},{l:'TC',ans:tc},{l:'π',ans:pi}],`TR = ${P} · ${Q} = ${tr}\nTC = FC + AVC·Q = ${fc} + ${avc}·${Q} = ${tc}\nπ = TR − TC = ${tr} − ${tc} = <span class="k">${pi}</span>${pi<0?'\nZáporný zisk = ztráta.':''}`);
+}
+for(let k=0,sd=0;k<8;sd++){
+  const r=rng(2400+sd); const P=pk(r,[50,60,70,80]); const fc=pk(r,[30,40,50,60,80]);
+  const mcs=[ri(r,25,40)]; for(let i=1;i<7;i++) mcs.push(mcs[i-1]+ (i<2? -ri(r,3,8): ri(r,8,20)));
+  const tc=costTable(fc,mcs); const tr=tc.map((_,q)=>P*q); const pis=tc.map((t,q)=>tr[q]-t);
+  let best=0; pis.forEach((p,q)=>{ if(p>pis[best]) best=q; });
+  if(pis.filter(p=>p===pis[best]).length>1 || best===0 || best===7 || pis[best]<=0) continue; k++;
+  num('zisk','opt',`Firma v dokonalé konkurenci prodává za <b>${P} Kč/ks</b>. Při jakém množství má maximální zisk a jak velký?${tblH([['Q',0,1,2,3,4,5,6,7],['TC',...tc]])}`,
+   [{l:'Q',ans:best},{l:'π max',ans:pis[best]}],`π = TR − TC = ${P}·Q − TC\n${pis.map((p,q)=>'Q='+q+': '+p).join(', ')}\nmax při <span class="k">Q = ${best}</span>, π = <span class="k">${pis[best]}</span>\nKontrola: dokud MC ≤ MR = ${P}, vyplatí se vyrábět dál.`);
+}
+mc('zisk','teorie','Celkový příjem firmy je:',['TR = P × Q','TR = TC − π','TR = Q / P','TR = P − AC'],'Tržby = cena × prodané množství.');
+mc('zisk','teorie','Průměrný příjem AR se vždy rovná:',['ceně P','meznímu příjmu','zisku na kus','průměrným nákladům'],'AR = TR / Q = P·Q / Q = <span class="k">P</span>.');
+mc('zisk','teorie','V dokonalé konkurenci platí:',['P = AR = MR','MR < P','MR > P','TR je konstantní'],'Firma prodá libovolné množství za tržní cenu → každý další kus přinese P.');
+mc('zisk','teorie','Firma maximalizuje zisk, když vyrábí množství, při kterém:',['MR = MC','TR = TC','AC je minimální','TR je maximální'],'Dokud MR > MC, další kus zvyšuje zisk. Optimum <span class="k">MR = MC</span>.');
+mc('zisk','teorie','Bod zvratu je:',['množství, při kterém TR = TC a zisk je nulový','maximum zisku','minimum MC','bod, kde MR = 0'],'Pod bodem zvratu je firma ve ztrátě, nad ním v zisku.');
+mc('zisk','teorie','Ekonomický zisk se počítá jako:',['TR − (explicitní + implicitní náklady)','TR − explicitní náklady','TR − FC','TR · Q'],'Účetní zisk odečítá jen explicitní náklady. <span class="k">Ekonomický</span> i ty implicitní (ušlé příležitosti).');
+mc('zisk','teorie','Normální zisk znamená, že:',['ekonomický zisk je nulový – firma vydělá stejně jako v nejlepší alternativě','účetní zisk je nulový','firma je ve ztrátě','firma má monopol'],'Účetní zisk pokrývá právě náklady obětované příležitosti → <span class="k">ekonomický zisk = 0</span>.');
+mc('zisk','teorie','U monopolu (klesající poptávka) je mezní příjem:',['nižší než cena','vyšší než cena','roven ceně','vždy nulový'],'Aby monopol prodal další kus, musí zlevnit všechny → <span class="k">MR < P</span>.');
+mc('zisk','teorie','Účetní zisk 500 000 Kč, implicitní náklady 600 000 Kč. Ekonomický zisk je:',['−100 000 Kč','500 000 Kč','1 100 000 Kč','100 000 Kč'],'Ekonomický = účetní − implicitní = 500 000 − 600 000 = <span class="k">−100 000</span>. Ekonomicky se nevyplatí.');
+mc('zisk','teorie','Mezní příjem (MR) je:',['přírůstek celkového příjmu z prodeje další jednotky','příjem na jeden kus','celkový příjem minus náklady','cena minus náklady'],'MR = ΔTR / ΔQ.');
+mc('zisk','teorie','Co je základní rozhodovací kritérium v modelu firmy?',['maximalizace zisku π = TR − TC','maximalizace tržeb','minimalizace FC','maximalizace počtu zaměstnanců'],'Cílem firmy je <span class="k">maximalizace zisku</span>.');
+mc('zisk','teorie','Firma vyrábí množství, kde MC > MR. Co by měla udělat?',['snížit výrobu','zvýšit výrobu','nic neměnit','zvýšit fixní náklady'],'Poslední kusy stojí víc, než přinesou → snížením výroby zisk vzroste.');
+
+/* ===== Aplikace ===== */
+const $ = (s,el=document) => el.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const strip = h => h.replace(/<[^>]+>/g,' ').replace(/&[a-z#0-9]+;/gi,' ').replace(/\s+/g,' ').trim();
+const TOP = Object.fromEntries(TOPICS.map(t=>[t.id,t]));
+const catName = (t,c) => (CATS[t].find(x=>x[0]===c)||[c,c])[1];
+const qsOf = (t,c) => QS.filter(q=>q.topic===t && (!c || q.cat===c));
+
+/* ---------- úložiště ---------- */
+const KEY='ekonomie.v1';
+let S;
+try { S = JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ S = {}; }
+S.res = S.res || {}; S.time = S.time || {}; S.tests = S.tests || [];
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} };
+const today = (d=new Date()) => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+function record(q, ok){
+  const r = S.res[q.id] || {n:0, ok:false, first:null};
+  r.n++; r.last = ok; if(ok) r.ok = true; if(r.first===null) r.first = ok; r.t = Date.now();
+  S.res[q.id] = r; save();
+}
+const solvedOf = list => list.filter(q=>S.res[q.id] && S.res[q.id].ok).length;
+const pctOf = list => list.length ? Math.round(100*solvedOf(list)/list.length) : 0;
+
+/* ---------- měření času ---------- */
+let curTopic = null, lastAct = Date.now();
+['pointerdown','keydown','scroll','touchstart','input'].forEach(ev=>addEventListener(ev,()=>lastAct=Date.now(),{passive:true}));
+setInterval(()=>{
+  if(document.visibilityState!=='visible' || Date.now()-lastAct > 120000) return;
+  const d = today(); S.time[d] = S.time[d] || {};
+  const k = curTopic || '_';
+  S.time[d][k] = (S.time[d][k]||0) + 5; save();
+  const el = $('#sideTime'); if(el) el.innerHTML = sideTime();
+}, 5000);
+const secDay = d => Object.values(S.time[d]||{}).reduce((a,b)=>a+b,0);
+const secTopic = t => Object.values(S.time).reduce((a,day)=>a+(day[t]||0),0);
+const secAll = () => Object.keys(S.time).reduce((a,d)=>a+secDay(d),0);
+const secWeek = () => { let s=0; for(let i=0;i<7;i++){ const d=new Date(); d.setDate(d.getDate()-i); s+=secDay(today(d)); } return s; };
+const dur = s => { const m=Math.round(s/60); if(m<60) return m+' min'; return Math.floor(m/60)+' h '+(m%60)+' min'; };
+function twoStep(btn, msg, fn){ let armed=false, t; btn.onclick=()=>{ if(armed){ clearTimeout(t); fn(); return; } armed=true; const o=btn.textContent; btn.textContent=msg; btn.classList.add('pri'); t=setTimeout(()=>{armed=false; btn.textContent=o; btn.classList.remove('pri');},4000); }; }
+const sideTime = () => `dnes <b>${dur(secDay(today()))}</b><br>týden ${dur(secWeek())}`;
+
+/* ---------- ikony ---------- */
+const IC = {
+  home:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+  test:'<path d="M9 3h6M10 3v6L4.5 19a1.5 1.5 0 0 0 1.3 2h12.4a1.5 1.5 0 0 0 1.3-2L14 9V3"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',
+  fx:'<path d="M4 6h16M4 12h10M4 18h7"/>',
+  stat:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'
+};
+const icon = n => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
+
+/* ---------- layout ---------- */
+function shell(){
+  document.body.innerHTML = `<div class="app">
+    <nav class="side" aria-label="Hlavní menu">
+      <a class="brand" href="#/">~/ekonomie</a>
+      <div class="navgrp">
+        <a class="navlink" data-r="/" href="#/">Přehled</a>
+        <a class="navlink" data-r="/test" href="#/test">Test</a>
+        <a class="navlink" data-r="/hledat" href="#/hledat">Hledat</a>
+        <a class="navlink" data-r="/vzorce" href="#/vzorce">Vzorce</a>
+        <a class="navlink" data-r="/pokrok" href="#/pokrok">Pokrok</a>
+      </div>
+      <div class="navgrp"><div class="navlbl">TÉMATA</div><div id="sideTopics"></div></div>
+      <div class="sidefoot" id="sideTime"></div>
+    </nav>
+    <main id="main" tabindex="-1"></main>
+    <nav class="bottomnav" aria-label="Menu">
+      <a data-r="/" href="#/">${icon('home')}přehled</a>
+      <a data-r="/test" href="#/test">${icon('test')}test</a>
+      <a data-r="/hledat" href="#/hledat">${icon('search')}hledat</a>
+      <a data-r="/vzorce" href="#/vzorce">${icon('fx')}vzorce</a>
+      <a data-r="/pokrok" href="#/pokrok">${icon('stat')}pokrok</a>
+    </nav></div>`;
+}
+function sideTopics(active){
+  $('#sideTopics').innerHTML = TOPICS.map(t=>`<a class="navlink ${active===t.id?'on':''}" href="#/t/${t.id}">${t.n} ${t.name}<span class="pct">${pctOf(qsOf(t.id))}%</span></a>`).join('');
+  $('#sideTime').innerHTML = sideTime();
+}
+
+/* ---------- router ---------- */
+function route(){
+  const h = location.hash.replace(/^#/,'') || '/';
+  const [path, qstr] = h.split('?');
+  const p = path.split('/').filter(Boolean);
+  const m = $('#main');
+  let base = '/'+(p[0]||'');
+  curTopic = p[0]==='t' ? p[1] : p[0]==='test' ? 'test' : null;
+  document.querySelectorAll('[data-r]').forEach(a=>a.classList.toggle('on', a.dataset.r===base || (base==='/' && a.dataset.r==='/')));
+  if(p[0]==='t') document.querySelectorAll('[data-r]').forEach(a=>a.classList.remove('on'));
+  sideTopics(p[0]==='t'?p[1]:null);
+  m.className='fade'; void m.offsetWidth;
+  if(!p.length) vHome(m);
+  else if(p[0]==='t' && TOP[p[1]]){
+    S.last = p[1]; save();
+    if(!p[2]) vLesson(m, p[1]);
+    else if(p[2]==='p' && !p[3]) vCats(m, p[1]);
+    else if(p[2]==='p') vPractice(m, p[1], p[3], +(p[4]||0));
+    else if(p[2]==='f') vTopicFx(m, p[1]);
+  }
+  else if(p[0]==='test') vTest(m);
+  else if(p[0]==='hledat') vSearch(m, decodeURIComponent((qstr||'').replace(/^q=/,'')));
+  else if(p[0]==='pokrok') vProgress(m);
+  else if(p[0]==='vzorce') vFx(m);
+  else vHome(m);
+  window.scrollTo(0,0);
+}
+addEventListener('hashchange', route);
+
+/* ---------- přehled ---------- */
+function vHome(m){
+  const all = QS.length, done = solvedOf(QS);
+  const att = Object.values(S.res); const firstOk = att.filter(r=>r.first).length;
+  const last = S.last && TOP[S.last];
+  m.innerHTML = `<div class="head"><div><div class="crumb">ekonomie / přehled</div><h1>Mikroekonomie</h1><p class="lead" style="margin:0">Látka s grafy, ${all} příkladů a testy na nanečisto.</p></div>
+    <div class="btns">${last?`<a class="btn" href="#/t/${last.id}">Pokračovat: ${esc(last.name)}</a>`:''}<a class="btn pri" href="#/test">Spustit test</a></div></div>
+    <div class="grid g4" style="margin-bottom:26px">
+      <div class="card stat"><span class="v acc">${dur(secDay(today()))}</span><span class="l">studium dnes</span></div>
+      <div class="card stat"><span class="v">${dur(secWeek())}</span><span class="l">za posledních 7 dní</span></div>
+      <div class="card stat"><span class="v">${done}<span class="muted" style="font-size:16px"> / ${all}</span></span><span class="l">vyřešených příkladů</span></div>
+      <div class="card stat"><span class="v">${att.length?Math.round(100*firstOk/att.length)+' %':'–'}</span><span class="l">správně napoprvé</span></div>
+    </div>
+    <h2>Témata</h2>
+    <div class="grid g3">${TOPICS.map(t=>{const l=qsOf(t.id), pc=pctOf(l); return `<a class="tile" href="#/t/${t.id}">
+      <span class="num">${t.n} · ${l.length} příkladů</span><span class="t">${t.name}</span><span class="d">${t.desc}</span>
+      <div class="bar"><i style="width:${pc}%"></i></div><span class="mono muted" style="font-size:11px">${pc}% hotovo · ${dur(secTopic(t.id))}</span></a>`;}).join('')}
+      <a class="tile" href="#/vzorce"><span class="num">tahák</span><span class="t">Všechny vzorce</span><span class="d">Rychlý přehled na jedné stránce.</span></a>
+    </div>`;
+}
+
+/* ---------- látka ---------- */
+function topicHead(t, tab){
+  return `<div class="crumb"><a href="#/">ekonomie</a> / ${t.n}</div><h1>${t.name}</h1><p class="lead">${t.desc}</p>
+   <div class="tabs" role="tablist"><a class="${tab==='l'?'on':''}" href="#/t/${t.id}">Látka</a><a class="${tab==='p'?'on':''}" href="#/t/${t.id}/p">Procvičování · ${qsOf(t.id).length}</a><a class="${tab==='f'?'on':''}" href="#/t/${t.id}/f">Vzorce</a></div>`;
+}
+function vLesson(m, id){
+  const t = TOP[id];
+  m.innerHTML = topicHead(t,'l') + t.sections.map((s,i)=> s.viz
+    ? `<section class="lesson" id="s${i}"><div class="txt card"><h2>${s.t}</h2>${s.html}</div><div data-viz="${s.viz}"></div></section>`
+    : `<section class="card" id="s${i}" style="margin-bottom:22px"><h2>${s.t}</h2>${s.html}</section>`).join('')
+    + `<div class="btns" style="margin-top:8px"><a class="btn pri" href="#/t/${id}/p">Jdu procvičovat →</a></div>`;
+  m.querySelectorAll('[data-viz]').forEach(el=>VIZ[el.dataset.viz](el));
+  const a = location.hash.match(/#s(\d+)$/);
+}
+function vTopicFx(m, id){
+  const t = TOP[id];
+  m.innerHTML = topicHead(t,'f') + `<div class="card">${FORMULAS.filter(f=>f[0]===id).map(f=>`<div class="fx"><span class="f">${f[1]}</span><span class="n">${f[2]}</span></div>`).join('')}</div>`;
+}
+function vFx(m){
+  m.innerHTML = `<div class="crumb"><a href="#/">ekonomie</a> / vzorce</div><h1>Vzorce</h1><p class="lead">Všechno důležité na jednom místě.</p>`+
+    TOPICS.map(t=>`<div class="card"><h2><span class="mono" style="color:var(--acc);font-size:14px">${t.n}</span> ${t.name}</h2>${FORMULAS.filter(f=>f[0]===t.id).map(f=>`<div class="fx"><span class="f">${f[1]}</span><span class="n">${f[2]}</span></div>`).join('')}</div>`).join('');
+}
+
+/* ---------- procvičování ---------- */
+function vCats(m, id){
+  const t = TOP[id];
+  m.innerHTML = topicHead(t,'p') + `<div class="cats">${CATS[id].map(([c,n,d])=>{const l=qsOf(id,c), s=solvedOf(l);
+    return `<a class="cat" href="#/t/${id}/p/${c}/${Math.max(0, l.findIndex(q=>!(S.res[q.id]&&S.res[q.id].ok)))}"><div><div class="n">${n}</div><div class="s">${d}</div></div>
+    <div class="r"><span>${s}/${l.length}</span><div class="bar"><i style="width:${l.length?100*s/l.length:0}%"></i></div></div></a>`;}).join('')}</div>
+    <div class="btns" style="margin-top:22px"><a class="btn" href="#/test">Test z tohoto tématu</a></div>`;
+  $('.btns .btn',m).onclick = e => { e.preventDefault(); TEST.pre=[id]; location.hash='#/test'; };
+}
+function vPractice(m, id, cat, i){
+  const t = TOP[id], list = qsOf(id, cat);
+  if(!list.length) return vCats(m,id);
+  i = Math.min(Math.max(0,i), list.length-1);
+  const q = list[i];
+  m.innerHTML = `<div class="crumb"><a href="#/">ekonomie</a> / <a href="#/t/${id}">${t.n} ${t.name}</a> / <a href="#/t/${id}/p">procvičování</a></div>
+    <h1 style="font-size:26px">${catName(id,cat)}</h1>
+    <div class="dots" aria-label="Seznam příkladů">${list.map((x,j)=>{const r=S.res[x.id]; return `<a href="#/t/${id}/p/${cat}/${j}" class="${r?(r.ok?'ok':'ko'):''} ${j===i?'cur':''}" aria-label="Příklad ${j+1}">${j+1}</a>`;}).join('')}</div>
+    <div class="card" id="qbox"></div>
+    <div class="navq"><a class="btn" href="#/t/${id}/p/${cat}/${i-1}" ${i===0?'style="visibility:hidden"':''}>← předchozí</a>
+      <a class="btn ghost" href="#/t/${id}/p">všechny kategorie</a>
+      <a class="btn pri" href="#/t/${id}/p/${cat}/${i+1}" ${i===list.length-1?'style="visibility:hidden"':''}>další →</a></div>`;
+  renderQ($('#qbox'), q, {mode:'practice', idx:i+1, total:list.length, onDone:(ok)=>{
+    record(q, ok);
+    const d = m.querySelectorAll('.dots a')[i]; d.classList.remove('ok','ko'); d.classList.add(S.res[q.id].ok?'ok':'ko');
+    sideTopics(id);
+  }});
+}
+
+/* ---------- otázka ---------- */
+function parseNum(s){
+  s = String(s).trim().replace(/\s/g,'').replace(/−/g,'-').replace(',', '.');
+  if(!s) return NaN;
+  if(/^-?\d+(\.\d+)?\/-?\d+(\.\d+)?$/.test(s)){ const [a,b]=s.split('/').map(Number); return a/b; }
+  return Number(s);
+}
+const near = (v, ans, tol) => Math.abs(v-ans) <= (tol!=null ? Math.max(tol,0.051) : (Number.isInteger(ans) ? 0.001 : 0.051));
+function renderQ(box, q, {mode, idx, total, onDone, onAnswer}){
+  const L = 'ABCDEFGH';
+  const head = `<div class="qsrc">${mode==='test'?`otázka ${idx} / ${total}`:`příklad ${idx} / ${total}`}${q.src?' · '+esc(q.src):''}${mode==='test'?' · '+TOP[q.topic].name:''}</div><div class="q">${q.q}</div>`;
+  if(q.type==='mc'){
+    box.innerHTML = head + `<div class="opts">${q.opts.map((o,j)=>`<button class="opt" data-j="${j}"><span class="l">${L[j]}</span><span>${o}</span></button>`).join('')}</div><div id="fb"></div>`;
+    box.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+      const j = +b.dataset.j, ok = j===q.ans;
+      if(mode==='test'){ onAnswer && onAnswer(ok, j); return; }
+      box.querySelectorAll('.opt').forEach(x=>{ x.disabled=true; const k=+x.dataset.j; if(k===q.ans) x.classList.add('ok'); else if(k===j) x.classList.add('ko'); });
+      feedback(box, q, ok); onDone && onDone(ok);
+    });
+  } else {
+    box.innerHTML = head + `<form class="numin" novalidate>${q.fields.map((f,j)=>`<label>${esc(f.l)}${f.unit?` <span class="unit">[${esc(f.unit)}]</span>`:''}<input inputmode="decimal" autocomplete="off" data-j="${j}" aria-label="${esc(f.l)}"></label>`).join('')}</form>
+      <div class="btns" style="margin-top:14px"><button class="btn pri" id="chk">${mode==='test'?'Odpovědět →':'Zkontrolovat'}</button>${mode==='practice'?'<button class="btn ghost" id="show">Ukázat řešení</button>':''}</div><div id="fb"></div>`;
+    const ins = [...box.querySelectorAll('input')];
+    if(matchMedia('(min-width: 861px)').matches) ins[0].focus();
+    const check = (giveUp) => {
+      const res = ins.map((inp,j)=>near(parseNum(inp.value), q.fields[j].ans, q.fields[j].tol));
+      const ok = !giveUp && res.every(Boolean);
+      if(mode==='test'){ onAnswer && onAnswer(ok, ins.map(i=>i.value)); return; }
+      ins.forEach((inp,j)=>{ inp.classList.toggle('ok',res[j]&&!giveUp); inp.classList.toggle('ko',!res[j]||giveUp); inp.readOnly=true; });
+      $('#chk',box).disabled = true; const sh=$('#show',box); if(sh) sh.disabled=true;
+      feedback(box, q, ok); onDone && onDone(ok);
+    };
+    $('#chk',box).onclick = () => check(false);
+    const sh=$('#show',box); if(sh) sh.onclick = () => check(true);
+    box.querySelector('form').onsubmit = e => { e.preventDefault(); check(false); };
+    ins.forEach((inp,j)=>inp.onkeydown=e=>{ if(e.key==='Enter'){ e.preventDefault(); if(j<ins.length-1) ins[j+1].focus(); else check(false);} });
+  }
+}
+function feedback(box, q, ok){
+  const correct = q.type==='mc' ? '' : `<div class="mono" style="font-size:13px;color:var(--text2);margin-bottom:10px">Správně: ${q.fields.map(f=>`${esc(f.l)} = <span style="color:var(--acc)">${nf(f.ans)}</span>`).join(' · ')}</div>`;
+  $('#fb',box).innerHTML = `<div class="fb fade"><div class="h ${ok?'ok':'ko'}">${ok?'✓ Správně!':'✗ Tentokrát ne – mrkni na postup'}</div>${correct}<div class="sol">${q.sol}</div>${q.viz?`<div class="solviz">${miniShift(q.viz)}</div>`:''}</div>`;
+}
+
+/* ---------- test ---------- */
+const TEST = { pre:null, run:null };
+function vTest(m){
+  if(TEST.run && !TEST.run.done) return testRun(m);
+  if(TEST.run && TEST.run.done) return testResult(m);
+  const sel = new Set(TEST.pre || TOPICS.map(t=>t.id)); TEST.pre=null;
+  let n = 20, onlyNew = false;
+  const draw = () => {
+    const pool = QS.filter(q=>sel.has(q.topic) && (!onlyNew || !(S.res[q.id]&&S.res[q.id].ok)));
+    m.innerHTML = `<div class="crumb"><a href="#/">ekonomie</a> / test</div><h1>Test nanečisto</h1><p class="lead">Vyber témata a počet otázek. Výsledek a postupy uvidíš až na konci.</p>
+      <div class="card"><h3>Témata</h3><div class="grid g2" style="margin-top:10px">${TOPICS.map(t=>`<label class="check ${sel.has(t.id)?'on':''}"><input type="checkbox" data-t="${t.id}" ${sel.has(t.id)?'checked':''}><span><b>${t.n}</b> ${t.name} <span class="muted mono" style="font-size:11px">· ${qsOf(t.id).length}</span></span></label>`).join('')}</div>
+      <div class="btns" style="margin-top:12px"><button class="btn ghost" id="all">vybrat vše</button><button class="btn ghost" id="none">zrušit vše</button></div></div>
+      <div class="card"><h3>Počet otázek</h3><div class="seg" style="margin-top:10px">${[10,20,30,50].map(v=>`<button data-n="${v}" class="${v===n?'on':''}">${v}</button>`).join('')}</div>
+      <label class="check ${onlyNew?'on':''}" style="margin-top:14px"><input type="checkbox" id="new" ${onlyNew?'checked':''}><span>Jen příklady, které ještě nemám vyřešené</span></label></div>
+      <div class="btns" style="margin-top:20px"><button class="btn pri" id="go" ${pool.length?'':'disabled'}>Spustit test (${Math.min(n,pool.length)} otázek)</button></div>`;
+    m.querySelectorAll('[data-t]').forEach(c=>c.onchange=()=>{ c.checked?sel.add(c.dataset.t):sel.delete(c.dataset.t); draw(); });
+    m.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{ n=+b.dataset.n; draw(); });
+    $('#new',m).onchange = e => { onlyNew = e.target.checked; draw(); };
+    $('#all',m).onclick=()=>{ TOPICS.forEach(t=>sel.add(t.id)); draw(); };
+    $('#none',m).onclick=()=>{ sel.clear(); draw(); };
+    $('#go',m).onclick=()=>{
+      const r = rng(Date.now()); const picked = shuffle(pool, r).slice(0, n);
+      TEST.run = { qs:picked, i:0, ans:[], topics:[...sel], start:Date.now(), done:false };
+      testRun(m);
+    };
+  };
+  draw();
+}
+function testRun(m){
+  const R = TEST.run, q = R.qs[R.i];
+  m.innerHTML = `<div class="head"><div><div class="crumb">test</div><h1 style="font-size:26px">Otázka ${R.i+1} z ${R.qs.length}</h1></div><button class="btn ghost" id="quit">Ukončit test</button></div>
+    <div class="bar" style="margin-bottom:22px"><i style="width:${100*R.i/R.qs.length}%"></i></div><div class="card" id="qbox"></div>`;
+  twoStep($('#quit',m), 'Klikni znovu – zbytek bude špatně', ()=>{ while(R.ans.length<R.qs.length) R.ans.push({ok:false,v:null}); finish(); });
+  const finish = () => { R.done=true; R.end=Date.now(); R.qs.forEach((x,j)=>record(x,R.ans[j].ok));
+    S.tests.unshift({d:Date.now(), n:R.qs.length, ok:R.ans.filter(a=>a.ok).length, topics:R.topics}); S.tests=S.tests.slice(0,30); save(); testResult(m); };
+  renderQ($('#qbox',m), q, {mode:'test', idx:R.i+1, total:R.qs.length, onAnswer:(ok,v)=>{
+    R.ans.push({ok,v}); R.i++;
+    if(R.i>=R.qs.length) finish(); else { testRun(m); window.scrollTo(0,0); }
+  }});
+}
+function testResult(m){
+  const R = TEST.run, ok = R.ans.filter(a=>a.ok).length, pc = Math.round(100*ok/R.qs.length);
+  const L='ABCDEFGH';
+  m.innerHTML = `<div class="crumb">test / výsledek</div><div class="card" style="display:flex;gap:28px;align-items:center;flex-wrap:wrap;margin-bottom:22px">
+     <div class="score">${pc}%</div><div><h2 style="margin:0 0 4px">${ok} z ${R.qs.length} správně</h2><p style="margin:0">${pc>=90?'Výborně, tohle máš v malíčku.':pc>=70?'Dobrý, pár věcí ještě dopiluj.':pc>=50?'Na hraně – projdi si špatné odpovědi níž.':'Zatím to nesedí – vrať se k látce a grafům.'} · ${dur((R.end-R.start)/1000)}</p></div>
+     <div class="btns" style="margin-left:auto"><button class="btn" id="again">Nový test</button><button class="btn pri" id="wrong" ${ok===R.qs.length?'disabled':''}>Zopakovat chybné</button></div></div>
+    <h2>Přehled odpovědí</h2>
+    ${R.qs.map((q,j)=>{const a=R.ans[j]; const your = q.type==='mc' ? (a.v!=null?L[a.v]+') '+q.opts[a.v]:'–') : (a.v?a.v.map((v,k)=>esc(q.fields[k].l)+' = '+(esc(v)||'–')).join(' · '):'–');
+      const right = q.type==='mc' ? L[q.ans]+') '+q.opts[q.ans] : q.fields.map(f=>esc(f.l)+' = '+nf(f.ans)).join(' · ');
+      return `<details class="card" ${a.ok?'':'open'}><summary style="cursor:pointer;display:flex;gap:12px;align-items:flex-start;list-style:none"><span class="tag ${a.ok?'acc':'bad'}">${a.ok?'✓':'✗'} ${j+1}</span><span style="flex:1;font-size:15px;line-height:1.5">${strip(q.q).slice(0,140)}${strip(q.q).length>140?'…':''}</span></summary>
+       <div style="margin-top:14px"><div class="q" style="font-size:15px">${q.q}</div><div class="mono" style="font-size:13px;line-height:1.8"><span class="muted">tvoje:</span> ${your}<br><span class="muted">správně:</span> <span style="color:var(--acc)">${right}</span></div>
+       <div class="fb"><div class="sol">${q.sol}</div>${q.viz?`<div class="solviz">${miniShift(q.viz)}</div>`:''}</div></div></details>`;}).join('')}`;
+  $('#again',m).onclick=()=>{ TEST.run=null; vTest(m); };
+  $('#wrong',m).onclick=()=>{ const w=R.qs.filter((_,j)=>!R.ans[j].ok); TEST.run={qs:shuffle(w,rng(Date.now())), i:0, ans:[], topics:R.topics, start:Date.now(), done:false}; testRun(m); };
+}
+
+/* ---------- hledání ---------- */
+let IDX=null;
+function buildIdx(){
+  IDX=[];
+  TOPICS.forEach(t=>{
+    IDX.push({k:'téma', t:t.name, x:t.desc, h:`#/t/${t.id}`});
+    t.sections.forEach((s,i)=>IDX.push({k:'látka · '+t.name, t:s.t, x:strip(s.html), h:`#/t/${t.id}`}));
+    CATS[t.id].forEach(([c,n,d])=>IDX.push({k:'procvičování · '+t.name, t:n, x:d, h:`#/t/${t.id}/p/${c}/0`}));
+  });
+  FORMULAS.forEach(f=>IDX.push({k:'vzorec · '+TOP[f[0]].name, t:f[1], x:f[2], h:`#/t/${f[0]}/f`}));
+  QS.forEach(q=>{ const l=qsOf(q.topic,q.cat); IDX.push({k:'příklad · '+catName(q.topic,q.cat)+(q.src?' · '+q.src:''), t:'', x:strip(q.q)+' '+(q.type==='mc'?q.opts.join(' '):''), h:`#/t/${q.topic}/p/${q.cat}/${l.indexOf(q)}`}); });
+}
+const norm = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+function vSearch(m, q0){
+  if(!IDX) buildIdx();
+  m.innerHTML = `<div class="crumb"><a href="#/">ekonomie</a> / hledat</div><h1>Hledat</h1><p class="lead">Látka, vzorce i jednotlivé příklady. Zkus „substitut“, „MRS“, „2/58“ nebo „trdelník“.</p>
+    <div class="search">${icon('search')}<input id="sq" type="search" placeholder="co hledáš?" aria-label="Hledat" value="${esc(q0)}"></div><div id="sres"></div>`;
+  const inp=$('#sq',m), out=$('#sres',m);
+  const run = () => {
+    const raw = inp.value.trim(); const words = norm(raw).split(/\s+/).filter(Boolean);
+    history.replaceState(null,'','#/hledat'+(raw?'?q='+encodeURIComponent(raw):''));
+    if(!words.length){ out.innerHTML = `<div class="btns">${['poptávka','substitut','rovnováha','mezní užitek','MRS','linie rozpočtu','produkční funkce','MC','zisk','2/21','6/34'].map(w=>`<button class="btn" data-w="${w}">${w}</button>`).join('')}</div>`; out.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{inp.value=b.dataset.w; run();}); return; }
+    const res = IDX.map(e=>{ const hay=norm(e.t+' '+e.x+' '+e.k); if(!words.every(w=>hay.includes(w))) return null; let sc=0; words.forEach(w=>{ if(norm(e.t).includes(w)) sc+=5; if(e.k.startsWith('vzorec')||e.k.startsWith('látka')||e.k==='téma') sc+=2; }); return {e,sc}; }).filter(Boolean).sort((a,b)=>b.sc-a.sc).slice(0,40);
+    const hl = s => { let h=esc(s); words.forEach(w=>{ if(w.length<2) return; const re=new RegExp('('+w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'); h=h.replace(re,'<mark>$1</mark>'); }); return h; };
+    const snip = (x) => { const nx=norm(x); const p=Math.max(0, nx.indexOf(words[0])-60); return (p?'…':'')+x.slice(p, p+200)+(x.length>p+200?'…':''); };
+    out.innerHTML = res.length ? `<p class="muted mono" style="font-size:12px">${res.length===40?'40+':res.length} výsledků</p>`+res.map(({e})=>`<a class="res" href="${e.h}"><div class="k">${esc(e.k)}</div>${e.t?`<div style="font-weight:600;margin-bottom:4px">${hl(e.t)}</div>`:''}<div class="x">${hl(snip(e.x))}</div></a>`).join('') : `<p>Nic jsem nenašel. Zkus jiné slovo nebo jen jeho část.</p>`;
+  };
+  inp.oninput = run; run(); inp.focus();
+}
+
+/* ---------- pokrok ---------- */
+function vProgress(m){
+  const days=[]; for(let i=6;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); days.push({d, s:secDay(today(d))}); }
+  const mx = Math.max(60, ...days.map(x=>x.s));
+  const DN=['ne','po','út','st','čt','pá','so'];
+  const att=Object.values(S.res);
+  m.innerHTML = `<div class="crumb"><a href="#/">ekonomie</a> / pokrok</div><h1>Pokrok</h1><p class="lead">Čas se měří, když máš appku otevřenou a něco děláš (po 2 min nečinnosti se zastaví).</p>
+    <div class="grid g4" style="margin-bottom:18px">
+      <div class="card stat"><span class="v acc">${dur(secDay(today()))}</span><span class="l">dnes</span></div>
+      <div class="card stat"><span class="v">${dur(secWeek())}</span><span class="l">7 dní</span></div>
+      <div class="card stat"><span class="v">${dur(secAll())}</span><span class="l">celkem</span></div>
+      <div class="card stat"><span class="v">${att.length}</span><span class="l">zkoušených příkladů</span></div>
+    </div>
+    <div class="card"><h2>Posledních 7 dní</h2><div class="week">${days.map(x=>`<div class="c"><span class="m">${x.s>=60?Math.round(x.s/60):''}</span><div class="b ${x.s<60?'z':''}" style="height:${Math.max(2,100*x.s/mx)}%"></div><span class="d">${DN[x.d.getDay()]}</span></div>`).join('')}</div><p class="muted mono" style="font-size:11px;margin:10px 0 0">minuty za den</p></div>
+    <div class="card"><h2>Podle témat</h2>${TOPICS.map(t=>{const l=qsOf(t.id), r=l.map(q=>S.res[q.id]).filter(Boolean), f=r.filter(x=>x.first).length;
+      return `<div class="rowp"><a href="#/t/${t.id}" style="color:var(--text);text-decoration:none"><b class="mono" style="color:var(--acc);font-size:12px">${t.n}</b> ${t.name}<div class="muted" style="font-size:12px;margin-top:3px">${solvedOf(l)}/${l.length} vyřešeno · napoprvé ${r.length?Math.round(100*f/r.length)+' %':'–'}</div></a><div class="bar"><i style="width:${pctOf(l)}%"></i></div><span class="mono">${dur(secTopic(t.id))}</span></div>`;}).join('')}</div>
+    <div class="card"><h2>Poslední testy</h2>${S.tests.length?S.tests.slice(0,10).map(x=>`<div class="rowp"><span>${new Date(x.d).toLocaleString('cs-CZ',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'})} <span class="muted" style="font-size:12px">· ${x.topics.map(t=>TOP[t]?TOP[t].n:'').join(', ')}</span></span><div class="bar"><i style="width:${100*x.ok/x.n}%"></i></div><span class="mono">${x.ok}/${x.n}</span></div>`).join(''):'<p class="muted" style="margin:0">Zatím žádný test. <a href="#/test">Spustit první</a></p>'}</div>
+    <div class="btns" style="margin-top:22px"><button class="btn ghost" id="reset">Smazat pokrok</button></div>`;
+  twoStep($('#reset',m), 'Opravdu smazat vše? Klikni znovu', ()=>{ S={res:{},time:{},tests:[]}; save(); vProgress(m); });
+}
+
+shell(); route();
+
+</script>
+</body>
+</html>
