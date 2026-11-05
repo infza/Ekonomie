@@ -1,7 +1,19 @@
 # Ekonomie
 
-Študijná aplikácia na mikroekonómiu pre 2. ročník. Obsahuje učivo s animovanými grafmi, približne 250 príkladov, testy, vyhľadávanie a sledovanie času štúdia. Všetko funguje priamo v prehliadači a pokrok sa ukladá v `localStorage`.
+Študijná aplikácia z mikroekonómie pre 2. ročník. Obsahuje učivo s animovanými grafmi, približne 250 príkladov, testy, vyhľadávanie a sledovanie času štúdia. Všetko beží priamo v prehliadači a pokrok sa ukladá do `localStorage`.
 
-## Stav slovenského prekladu
+## Preklad do slovenčiny
 
-Preklad do slovenčiny sa práve začína. Tento súbor README je prvou preloženou časťou; používateľské rozhranie a študijné materiály sú zatiaľ prevažne v češtine.
+Tento repozitár sa postupne preklada z češtiny do slovenčiny. Prvá časť je už upravená v tomto súbore README a ďalším krokom bude preklad používateľského rozhrania, študijných pojmov a textov v hlavnej aplikácii.
+
+### Stav
+- README: preložené
+- web app UI: v procese
+- učebné texty a formulácie: v procese
+- grafy a interaktívne popisy: plánované
+
+### Plán ďalších krokov
+1. Preložiť statické texty v HTML/JS rozhraní.
+2. Preložiť názvy sekcií, tlačidiel a vysvetľujúce texty.
+3. Upraviť obsah príkladov a popisy z pohľadu študenta.
+4. Overiť, či zostal zachovaný vzhľad a funkčnosť aplikácie.
