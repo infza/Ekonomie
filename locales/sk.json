@@ -1,0 +1,123 @@
+{
+  "locale": "sk",
+  "language": "Slovenčina",
+  "ui": {
+    "menu": "Menu",
+    "overview": "Prehľad",
+    "test": "Test",
+    "search": "Hľadať",
+    "formulas": "Vzorce",
+    "progress": "Pokrok",
+    "topics": "TÉMY",
+    "lesson": "Učivo",
+    "practice": "Precvičovanie",
+    "visualizations": "Vizualizácie",
+    "allVisualizations": "Všetky vizualizácie",
+    "startPractice": "Začať precvičovanie",
+    "practiceAll": "Precvičovať všetko",
+    "allCategories": "Všetky kategórie",
+    "previous": "Predchádzajúca",
+    "next": "Ďalej",
+    "showSolution": "Zobraziť riešenie",
+    "checkAnswer": "Skontrolovať",
+    "correctAnswer": "Správne",
+    "incorrectAnswer": "Nesprávne – skús to znova",
+    "searchPlaceholder": "Čo chceš nájsť?",
+    "searchEmpty": "Nič sa nenašlo. Skús iné slovo alebo iba jeho časť.",
+    "today": "dnes",
+    "lastSevenDays": "za posledných 7 dní",
+    "solvedExamples": "vyriešených príkladov",
+    "studyTime": "čas štúdia",
+    "minutesPerDay": "minút za deň",
+    "chooseTopics": "Vyber témy",
+    "questionCount": "Počet otázok",
+    "onlyUnsolved": "Iba príklady, ktoré ešte neboli vyriešené",
+    "startTest": "Spustiť test",
+    "endTest": "Ukončiť test",
+    "retryWrong": "Zopakovať nesprávne",
+    "newTest": "Nový test",
+    "answerOverview": "Prehľad odpovedí",
+    "resetProgress": "Vymazať pokrok",
+    "confirmReset": "Naozaj chceš vymazať všetok pokrok? Klikni znova.",
+    "cancel": "Zrušiť",
+    "minutes": "min",
+    "hours": "h"
+  },
+  "topics": {
+    "market": {
+      "name": "Trh a rovnováha",
+      "description": "Dopyt, ponuka, posuny kriviek, trhová rovnováha a úloha štátu na trhu."
+    },
+    "consumer": {
+      "name": "Správanie spotrebiteľa",
+      "description": "Kardinalistický a ordinalistický prístup, úžitok, indiferenčné krivky a rozpočtová priamka."
+    },
+    "production": {
+      "name": "Produkčná funkcia",
+      "description": "Celkový, priemerný a hraničný produkt, zákon klesajúcich výnosov, krátke a dlhé obdobie."
+    },
+    "costs": {
+      "name": "Náklady firmy",
+      "description": "Fixné, variabilné, celkové, priemerné a hraničné náklady."
+    },
+    "profit": {
+      "name": "Príjmy a zisk",
+      "description": "Celkové, priemerné a hraničné príjmy, zisk a jeho maximalizácia."
+    }
+  },
+  "categories": {
+    "market": {
+      "shifts": "Posuny kriviek",
+      "tableEquilibrium": "Rovnováha z tabuľky",
+      "functionEquilibrium": "Rovnováha z funkcií",
+      "surplusShortage": "Prebytok a nedostatok",
+      "theory": "Pojmy a teória"
+    },
+    "consumer": {
+      "utility": "TU, MU a optimum",
+      "multipleGoods": "Rovnováha pri viacerých statkoch",
+      "budgetLine": "Rozpočtová priamka",
+      "fromGraph": "Čítanie z grafu",
+      "theory": "Pojmy a teória"
+    },
+    "production": {
+      "totalProduct": "Celkový produkt TP",
+      "averageProduct": "Priemerný produkt AP",
+      "marginalProduct": "Hraničný produkt MP",
+      "increment": "Prírastok produkcie",
+      "maximum": "Maximum AP a MP",
+      "theory": "Pojmy a teória"
+    },
+    "costs": {
+      "table": "Doplnenie tabuľky",
+      "function": "Nákladová funkcia",
+      "theory": "Pojmy a teória"
+    },
+    "profit": {
+      "revenue": "TR, AR a MR",
+      "calculation": "Výpočet zisku",
+      "maximization": "Maximalizácia zisku",
+      "theory": "Pojmy a teória"
+    }
+  },
+  "economics": {
+    "demand": "dopyt",
+    "supply": "ponuka",
+    "equilibrium": "rovnováha",
+    "surplus": "prebytok",
+    "shortage": "nedostatok",
+    "consumerSurplus": "spotrebiteľský prebytok",
+    "marginalUtility": "hraničný úžitok",
+    "totalUtility": "celkový úžitok",
+    "budgetLine": "rozpočtová priamka",
+    "fixedCosts": "fixné náklady",
+    "variableCosts": "variabilné náklady",
+    "totalCosts": "celkové náklady",
+    "marginalCosts": "hraničné náklady",
+    "totalRevenue": "celkové príjmy",
+    "marginalRevenue": "hraničné príjmy",
+    "profit": "zisk",
+    "perfectCompetition": "dokonalá konkurencia",
+    "monopoly": "monopol"
+  }
+}
